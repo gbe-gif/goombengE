@@ -44,6 +44,26 @@ const archiveData = [
   { id: 'e37', code: 'E37', name: '잘못 주웠다', type: 'image', imageUrl: 'https://i.postimg.cc/3x7zSd9P/멈머쿤.jpg', link: 'https://posty.pe/f5uiup' },
   { id: 'e38', code: 'E38', name: '황보 현', type: 'image', imageUrl: 'https://i.postimg.cc/1X4FX2qq/의사.jpg', link: 'https://posty.pe/exmx6z' },
   { id: 'e39', code: 'E39', name: '크리스마스 이미지', type: 'image', imageUrl: 'https://i.postimg.cc/G2TSvdG3/신목크리스마스.jpg', link: 'https://posty.pe/qt2y09' },
+  { id: 'e40', code: 'E40', name: '치비 배경화면 공유1 - 신목/황보현/나황심/코르벤/바실', type: 'image', imageUrl: 'https://i.postimg.cc/nc4gdF5m/예.png', link: 'https://posty.pe/7oe87j' },
+  { id: 'e41', code: 'E41', name: '치비 배경화면 공유2 - 켈른/카를하인츠/카실리안', type: 'image', imageUrl: 'https://i.postimg.cc/5NBTP4Gv/예2.png', link: 'https://posty.pe/iv2ru6' },
+  { id: 'e42', code: 'E42', name: '치비 배경화면 공유3 - 범희성/령휘/석무열', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/lih8ni' },
+  { id: 'e43', code: 'E43', name: '치비 배경화면 공유4 - 레오카셀/루콘/탐미르/시우', type: 'image', imageUrl: 'https://i.postimg.cc/sDNZjLH8/산타레오1.jpg', link: 'https://posty.pe/atz119' },
+  { id: 'e44', code: 'E44', name: '코르벤 개인챗 B컷', type: 'image', imageUrl: 'https://i.postimg.cc/rpjRcm3N/표표표.jpg', link: 'https://posty.pe/suxvxq' },
+  { id: 'e45', code: 'E45', name: '코르벤 개인챗 검열컷', type: 'image', imageUrl: 'https://i.postimg.cc/3x7zSd9P/멈머쿤.jpg', link: 'https://posty.pe/3bt1kt' },
+  { id: 'e46', code: 'E46', name: '구단주님 아무래도~ B컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/epdkp4' },
+  { id: 'e47', code: 'E47', name: '구단주님 아무래도~ A컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/r87gmr' },
+  { id: 'e48', code: 'E48', name: '성인용품 개발팀~ B컷', type: 'image', imageUrl: 'https://i.postimg.cc/vZVwXQZ6/1안표지.jpg', link: 'https://posty.pe/3o91q0' },
+  { id: 'e49', code: 'E49', name: '성인용품 개발팀~ A컷', type: 'image', imageUrl: 'https://i.postimg.cc/vZVwXQZ6/1안표지.jpg', link: 'https://posty.pe/8ko65v' },
+  { id: 'e50', code: 'E50', name: '바실 개인챗 19컷', type: 'image', imageUrl: 'https://i.postimg.cc/Gmr67Hzf/늑대쿤.jpg', link: 'https://posty.pe/z9dn81' },
+  { id: 'e51', code: 'E51', name: '바실 개인챗 일상컷', type: 'image', imageUrl: 'https://i.postimg.cc/Wb81wCR6/11.jpg', link: 'https://posty.pe/aljk9f' },
+  { id: 'e52', code: 'E52', name: '마티니 블루 최해건', type: 'image', imageUrl: 'https://i.postimg.cc/htcDRV1p/선주_표지.jpg', link: 'https://posty.pe/m10gbo' },
+  { id: 'e53', code: 'E53', name: '고언집', type: 'image', imageUrl: 'https://i.postimg.cc/qqd7906h/고언집.jpg', link: 'https://posty.pe/apq3nl' },
+  { id: 'e54', code: 'E54', name: '빛만승', type: 'image', imageUrl: 'https://i.postimg.cc/Gt1pZrTT/빛만승.jpg', link: 'https://posty.pe/2ppo21' },
+  { id: 'e55', code: 'E55', name: '선즈옌', type: 'image', imageUrl: 'https://i.postimg.cc/FKnRWVwZ/1011.jpg', link: 'https://posty.pe/uw4yz9' },
+  { id: 'e56', code: 'E56', name: '김영준', type: 'image', imageUrl: 'https://i.postimg.cc/Kc9kndvk/332.jpg', link: 'https://posty.pe/izpmqx' },
+  { id: 'e57', code: 'E57', name: '엘리오르', type: 'image', imageUrl: 'https://i.postimg.cc/CKBWXM96/표지2.jpg', link: 'https://posty.pe/sci3fp' },
+  { id: 'e58', code: 'E58', name: '알리스테어/에드먼드/발테마르', type: 'image', imageUrl: 'https://i.postimg.cc/HLDHv6wF/ss.jpg', link: 'https://posty.pe/jbo26u' },
+  { id: 'e59', code: 'E59', name: '카샤엘', type: 'image', imageUrl: 'https://i.postimg.cc/gkgg6HNH/pp1.jpg', link: 'https://posty.pe/n9bpga' },
 
   // Worldview
   { id: 'w1', code: 'W1', name: '사신수 세계관', type: 'worldview', link: 'https://posty.pe/rq1w6b' },
@@ -103,20 +123,6 @@ export default function App() {
           >
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
-
-          {/* Search Bar */}
-          <div className="flex-1 max-w-xl relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search size={18} className="text-[#C0C4CC]/60" />
-            </div>
-            <input
-              type="text"
-              placeholder="이름이나 코드로 검색 (예: E1, W1)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-sm md:text-base text-white placeholder:text-[#C0C4CC]/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-            />
-          </div>
         </div>
 
         {/* Slide-down Menu */}
@@ -167,12 +173,9 @@ export default function App() {
             <p className="text-[#C0C4CC]/80 text-sm md:text-base">환영합니다. 기록을 열람하세요.</p>
           </div>
 
-          <div 
-            className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 md:grid md:grid-cols-2 md:overflow-visible md:pb-0"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Image 1 */}
-            <div className="relative min-w-[85vw] sm:min-w-[60vw] md:min-w-0 aspect-[4/5] md:aspect-[4/3] rounded-2xl overflow-hidden group snap-center shrink-0 border border-white/10 bg-black/50">
+            <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden group border border-white/10 bg-black/50">
               <img 
                 src="https://i.postimg.cc/Y9rn7ynV/TA_2026_03_12_11_07_26_solo_male_1592326835_0.png" 
                 alt="Hero Image 1" 
@@ -186,7 +189,7 @@ export default function App() {
             </div>
             
             {/* Image 2 */}
-            <div className="relative min-w-[85vw] sm:min-w-[60vw] md:min-w-0 aspect-[4/5] md:aspect-[4/3] rounded-2xl overflow-hidden group snap-center shrink-0 border border-white/10 bg-black/50">
+            <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden group border border-white/10 bg-black/50">
               <img 
                 src="https://i.postimg.cc/G2L7RS7Z/TA_2026_03_12_10_47_34_solo_femal_1824067726_1.png" 
                 alt="Hero Image 2" 
@@ -198,6 +201,22 @@ export default function App() {
                 <h2 className="text-xl md:text-2xl font-medium text-white tracking-tight">(어서오세요)</h2>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Portal-style Search Bar */}
+        <section className="mb-20 max-w-3xl mx-auto">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+              <Search size={24} className="text-[#C0C4CC]/60 group-focus-within:text-blue-400 transition-colors" />
+            </div>
+            <input
+              type="text"
+              placeholder="이름이나 코드로 검색 (예: E1, W1)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-6 text-lg text-white placeholder:text-[#C0C4CC]/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/10 transition-all shadow-lg shadow-black/20"
+            />
           </div>
         </section>
 
