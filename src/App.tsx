@@ -1,83 +1,83 @@
 import { useState, useMemo } from 'react';
-import { Menu, X, Search, Image as ImageIcon, FileText, Database, ChevronDown, ExternalLink } from 'lucide-react';
+import { Menu, X, Search, Image as ImageIcon, FileText, Database, ChevronDown, ExternalLink, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Mock Data
 const archiveData = [
-  // Image Archive (Category E)
-  { id: 'e1', code: 'E1', name: '도유안움짤', type: 'image', imageUrl: 'https://i.postimg.cc/P5f1z7ZG/b1.jpg', link: 'https://posty.pe/fi23fm' },
-  { id: 'e2', code: 'E2', name: '도유안 b컷', type: 'image', imageUrl: 'https://i.postimg.cc/y8V8bg7t/b6.jpg', link: 'https://posty.pe/4rh5d4' },
-  { id: 'e3', code: 'E3', name: '도유안 a컷', type: 'image', imageUrl: 'https://i.postimg.cc/6Qr65X0D/표지_오리지널.jpg', link: 'https://posty.pe/nstpuy' },
-  { id: 'e4', code: 'E4', name: '도유안 신뜨기념', type: 'image', imageUrl: 'https://i.postimg.cc/rFD8RWjG/12.jpg', link: 'https://posty.pe/ngyakm' },
-  { id: 'e5', code: 'E5', name: '에이드런', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/o3rs95' },
-  { id: 'e6', code: 'E6', name: '금욕하세요 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/7lhyar' },
-  { id: 'e7', code: 'E7', name: '금욕하세요 a컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/npcloc' },
-  { id: 'e8', code: 'E8', name: '고추만두튀김의 달인', type: 'image', imageUrl: 'https://i.postimg.cc/wBcfSdVG/검열.jpg', link: 'https://posty.pe/mabb4x' },
-  { id: 'e9', code: 'E9', name: '아 비밀로 해달라고', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/t6lvma' },
-  { id: 'e10', code: 'E10', name: '루카스 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/1uhoe4' },
-  { id: 'e11', code: 'E11', name: '루카스 a컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/xrkp8b' },
-  { id: 'e12', code: 'E12', name: '서지안 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/enfb70' },
-  { id: 'e13', code: 'E13', name: '메이슨 a컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/54vq7n' },
-  { id: 'e14', code: 'E14', name: '메이슨 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/edw2dy' },
-  { id: 'e15', code: 'E15', name: '로드리온', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/cqemno' },
-  { id: 'e16', code: 'E16', name: '리타 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/rlrylz' },
-  { id: 'e17', code: 'E17', name: '켈른 서비스컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/4x5o6v' },
-  { id: 'e18', code: 'E18', name: '카이스', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/dxt9uk' },
-  { id: 'e19', code: 'E19', name: '강태범', type: 'image', imageUrl: 'https://i.postimg.cc/FFqyqzfp/표지.jpg', link: 'https://posty.pe/wklkak' },
-  { id: 'e20', code: 'E20', name: '카를하인츠', type: 'image', imageUrl: 'https://i.postimg.cc/28zRNmqY/젖소표지.jpg', link: 'https://posty.pe/tu1nc5' },
-  { id: 'e21', code: 'E21', name: '카를하인츠 서비스컷', type: 'image', imageUrl: 'https://i.postimg.cc/bwQQSdsk/젖소.jpg', link: 'https://posty.pe/id3lvt' },
-  { id: 'e22', code: 'E22', name: '루카스&메이슨', type: 'image', imageUrl: 'https://i.postimg.cc/Hxj0VXfF/메이슨-1.jpg', link: 'https://posty.pe/gkatxy' },
-  { id: 'e23', code: 'E23', name: '루콘', type: 'image', imageUrl: 'https://i.postimg.cc/K8KV6362/solo,1male-3396431501-08_12_23.jpg', link: 'https://posty.pe/pov6ql' },
-  { id: 'e24', code: 'E24', name: '범희성 서비스컷', type: 'image', imageUrl: 'https://i.postimg.cc/vm2L806N/이거.jpg', link: 'https://posty.pe/xdaa2i' },
-  { id: 'e25', code: 'E25', name: '자이얀', type: 'image', imageUrl: 'https://i.postimg.cc/ZRn6VWyn/오만과_뻔뻔.jpg', link: 'https://posty.pe/cbhn3y' },
-  { id: 'e26', code: 'E26', name: '석무열 서비스컷', type: 'image', imageUrl: 'https://i.postimg.cc/B60kQKF2/solo,1male-1623302651-04_29_16.jpg', link: 'https://posty.pe/3jmaa6' },
-  { id: 'e27', code: 'E27', name: '내 남자의 남자', type: 'image', imageUrl: 'https://i.postimg.cc/NftG72LK/제목_없는_디자인.gif', link: 'https://posty.pe/1y4esf' },
-  { id: 'e28', code: 'E28', name: '신님의 신부', type: 'image', imageUrl: 'https://i.postimg.cc/sfmMHNfM/solo,1male-1445762169-07_09_03.jpg', link: 'https://posty.pe/62x780' },
-  { id: 'e29', code: 'E29', name: '레오카셀', type: 'image', imageUrl: 'https://i.postimg.cc/qvBpKqng/pyojiji.jpg', link: 'https://posty.pe/d6uhlm' },
-  { id: 'e30', code: 'E30', name: '튀어나와요 커신의 집', type: 'image', imageUrl: 'https://i.postimg.cc/kGWYf1ZR/1.jpg', link: 'https://posty.pe/dlj88h' },
-  { id: 'e31', code: 'E31', name: '잡아먹어요 커신의 저택', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/qpg5x8' },
-  { id: 'e32', code: 'E32', name: '발타자르', type: 'image', imageUrl: 'https://i.postimg.cc/TwJkQYS5/pyopyo.jpg', link: 'https://posty.pe/8x6ej7' },
-  { id: 'e33', code: 'E33', name: '가주들', type: 'image', imageUrl: 'https://i.postimg.cc/mDN8CRG2/1.jpg', link: 'https://posty.pe/ev7hwn' },
-  { id: 'e34', code: 'E34', name: '가주들S', type: 'image', imageUrl: 'https://i.postimg.cc/yNyM2MzV/표지1111.jpg', link: 'https://posty.pe/zuzkpc' },
-  { id: 'e35', code: 'E35', name: '나황심', type: 'image', imageUrl: 'https://i.postimg.cc/tJnqccP0/112.jpg', link: 'https://posty.pe/a856ym' },
-  { id: 'e36', code: 'E36', name: '최성필', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/1k0nzn' },
-  { id: 'e37', code: 'E37', name: '잘못 주웠다', type: 'image', imageUrl: 'https://i.postimg.cc/3x7zSd9P/멈머쿤.jpg', link: 'https://posty.pe/f5uiup' },
-  { id: 'e38', code: 'E38', name: '황보 현', type: 'image', imageUrl: 'https://i.postimg.cc/1X4FX2qq/의사.jpg', link: 'https://posty.pe/exmx6z' },
-  { id: 'e39', code: 'E39', name: '크리스마스 이미지', type: 'image', imageUrl: 'https://i.postimg.cc/G2TSvdG3/신목크리스마스.jpg', link: 'https://posty.pe/qt2y09' },
-  { id: 'e40', code: 'E40', name: '치비 배경화면 공유1 - 신목/황보현/나황심/코르벤/바실', type: 'image', imageUrl: 'https://i.postimg.cc/nc4gdF5m/예.png', link: 'https://posty.pe/7oe87j' },
-  { id: 'e41', code: 'E41', name: '치비 배경화면 공유2 - 켈른/카를하인츠/카실리안', type: 'image', imageUrl: 'https://i.postimg.cc/5NBTP4Gv/예2.png', link: 'https://posty.pe/iv2ru6' },
-  { id: 'e42', code: 'E42', name: '치비 배경화면 공유3 - 범희성/령휘/석무열', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/lih8ni' },
-  { id: 'e43', code: 'E43', name: '치비 배경화면 공유4 - 레오카셀/루콘/탐미르/시우', type: 'image', imageUrl: 'https://i.postimg.cc/sDNZjLH8/산타레오1.jpg', link: 'https://posty.pe/atz119' },
-  { id: 'e44', code: 'E44', name: '코르벤 개인챗 B컷', type: 'image', imageUrl: 'https://i.postimg.cc/rpjRcm3N/표표표.jpg', link: 'https://posty.pe/suxvxq' },
-  { id: 'e45', code: 'E45', name: '코르벤 개인챗 검열컷', type: 'image', imageUrl: 'https://i.postimg.cc/3x7zSd9P/멈머쿤.jpg', link: 'https://posty.pe/3bt1kt' },
-  { id: 'e46', code: 'E46', name: '구단주님 아무래도~ B컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/epdkp4' },
-  { id: 'e47', code: 'E47', name: '구단주님 아무래도~ A컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/r87gmr' },
-  { id: 'e48', code: 'E48', name: '성인용품 개발팀~ B컷', type: 'image', imageUrl: 'https://i.postimg.cc/vZVwXQZ6/1안표지.jpg', link: 'https://posty.pe/3o91q0' },
-  { id: 'e49', code: 'E49', name: '성인용품 개발팀~ A컷', type: 'image', imageUrl: 'https://i.postimg.cc/vZVwXQZ6/1안표지.jpg', link: 'https://posty.pe/8ko65v' },
-  { id: 'e50', code: 'E50', name: '바실 개인챗 19컷', type: 'image', imageUrl: 'https://i.postimg.cc/Gmr67Hzf/늑대쿤.jpg', link: 'https://posty.pe/z9dn81' },
-  { id: 'e51', code: 'E51', name: '바실 개인챗 일상컷', type: 'image', imageUrl: 'https://i.postimg.cc/Wb81wCR6/11.jpg', link: 'https://posty.pe/aljk9f' },
-  { id: 'e52', code: 'E52', name: '마티니 블루 최해건', type: 'image', imageUrl: 'https://i.postimg.cc/htcDRV1p/선주_표지.jpg', link: 'https://posty.pe/m10gbo' },
-  { id: 'e53', code: 'E53', name: '고언집', type: 'image', imageUrl: 'https://i.postimg.cc/qqd7906h/고언집.jpg', link: 'https://posty.pe/apq3nl' },
-  { id: 'e54', code: 'E54', name: '빛만승', type: 'image', imageUrl: 'https://i.postimg.cc/Gt1pZrTT/빛만승.jpg', link: 'https://posty.pe/2ppo21' },
-  { id: 'e55', code: 'E55', name: '선즈옌', type: 'image', imageUrl: 'https://i.postimg.cc/FKnRWVwZ/1011.jpg', link: 'https://posty.pe/uw4yz9' },
-  { id: 'e56', code: 'E56', name: '김영준', type: 'image', imageUrl: 'https://i.postimg.cc/Kc9kndvk/332.jpg', link: 'https://posty.pe/izpmqx' },
-  { id: 'e57', code: 'E57', name: '엘리오르', type: 'image', imageUrl: 'https://i.postimg.cc/CKBWXM96/표지2.jpg', link: 'https://posty.pe/sci3fp' },
-  { id: 'e58', code: 'E58', name: '알리스테어/에드먼드/발테마르', type: 'image', imageUrl: 'https://i.postimg.cc/HLDHv6wF/ss.jpg', link: 'https://posty.pe/jbo26u' },
-  { id: 'e59', code: 'E59', name: '카샤엘', type: 'image', imageUrl: 'https://i.postimg.cc/gkgg6HNH/pp1.jpg', link: 'https://posty.pe/n9bpga' },
+  // Image Archive (Category I)
+  { id: 'i1', code: 'I1', name: '도유안움짤', type: 'image', imageUrl: 'https://i.postimg.cc/P5f1z7ZG/b1.jpg', link: 'https://posty.pe/fi23fm', date: '2026-03-01T00:01:00Z' },
+  { id: 'i2', code: 'I2', name: '도유안 b컷', type: 'image', imageUrl: 'https://i.postimg.cc/y8V8bg7t/b6.jpg', link: 'https://posty.pe/4rh5d4', date: '2026-03-01T00:02:00Z' },
+  { id: 'i3', code: 'I3', name: '도유안 a컷', type: 'image', imageUrl: 'https://i.postimg.cc/6Qr65X0D/표지_오리지널.jpg', link: 'https://posty.pe/nstpuy', date: '2026-03-01T00:03:00Z' },
+  { id: 'i4', code: 'I4', name: '도유안 신뜨기념', type: 'image', imageUrl: 'https://i.postimg.cc/rFD8RWjG/12.jpg', link: 'https://posty.pe/ngyakm', date: '2026-03-01T00:04:00Z' },
+  { id: 'i5', code: 'I5', name: '에이드런', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/o3rs95', date: '2026-03-01T00:05:00Z' },
+  { id: 'i6', code: 'I6', name: '금욕하세요 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/7lhyar', date: '2026-03-01T00:06:00Z' },
+  { id: 'i7', code: 'I7', name: '금욕하세요 a컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/npcloc', date: '2026-03-01T00:07:00Z' },
+  { id: 'i8', code: 'I8', name: '고추만두튀김의 달인', type: 'image', imageUrl: 'https://i.postimg.cc/wBcfSdVG/검열.jpg', link: 'https://posty.pe/mabb4x', date: '2026-03-01T00:08:00Z' },
+  { id: 'i9', code: 'I9', name: '아 비밀로 해달라고', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/t6lvma', date: '2026-03-01T00:09:00Z' },
+  { id: 'i10', code: 'I10', name: '루카스 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/1uhoe4', date: '2026-03-01T00:10:00Z' },
+  { id: 'i11', code: 'I11', name: '루카스 a컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/xrkp8b', date: '2026-03-01T00:11:00Z' },
+  { id: 'i12', code: 'I12', name: '서지안 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/enfb70', date: '2026-03-01T00:12:00Z' },
+  { id: 'i13', code: 'I13', name: '메이슨 a컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/54vq7n', date: '2026-03-01T00:13:00Z' },
+  { id: 'i14', code: 'I14', name: '메이슨 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/edw2dy', date: '2026-03-01T00:14:00Z' },
+  { id: 'i15', code: 'I15', name: '로드리온', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/cqemno', date: '2026-03-01T00:15:00Z' },
+  { id: 'i16', code: 'I16', name: '리타 b컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/rlrylz', date: '2026-03-01T00:16:00Z' },
+  { id: 'i17', code: 'I17', name: '켈른 서비스컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/4x5o6v', date: '2026-03-01T00:17:00Z' },
+  { id: 'i18', code: 'I18', name: '카이스', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/dxt9uk', date: '2026-03-01T00:18:00Z' },
+  { id: 'i19', code: 'I19', name: '강태범', type: 'image', imageUrl: 'https://i.postimg.cc/FFqyqzfp/표지.jpg', link: 'https://posty.pe/wklkak', date: '2026-03-01T00:19:00Z' },
+  { id: 'i20', code: 'I20', name: '카를하인츠', type: 'image', imageUrl: 'https://i.postimg.cc/28zRNmqY/젖소표지.jpg', link: 'https://posty.pe/tu1nc5', date: '2026-03-01T00:20:00Z' },
+  { id: 'i21', code: 'I21', name: '카를하인츠 서비스컷', type: 'image', imageUrl: 'https://i.postimg.cc/bwQQSdsk/젖소.jpg', link: 'https://posty.pe/id3lvt', date: '2026-03-01T00:21:00Z' },
+  { id: 'i22', code: 'I22', name: '루카스&메이슨', type: 'image', imageUrl: 'https://i.postimg.cc/Hxj0VXfF/메이슨-1.jpg', link: 'https://posty.pe/gkatxy', date: '2026-03-01T00:22:00Z' },
+  { id: 'i23', code: 'I23', name: '루콘', type: 'image', imageUrl: 'https://i.postimg.cc/K8KV6362/solo,1male-3396431501-08_12_23.jpg', link: 'https://posty.pe/pov6ql', date: '2026-03-01T00:23:00Z' },
+  { id: 'i24', code: 'I24', name: '범희성 서비스컷', type: 'image', imageUrl: 'https://i.postimg.cc/vm2L806N/이거.jpg', link: 'https://posty.pe/xdaa2i', date: '2026-03-01T00:24:00Z' },
+  { id: 'i25', code: 'I25', name: '자이얀', type: 'image', imageUrl: 'https://i.postimg.cc/ZRn6VWyn/오만과_뻔뻔.jpg', link: 'https://posty.pe/cbhn3y', date: '2026-03-01T00:25:00Z' },
+  { id: 'i26', code: 'I26', name: '석무열 서비스컷', type: 'image', imageUrl: 'https://i.postimg.cc/B60kQKF2/solo,1male-1623302651-04_29_16.jpg', link: 'https://posty.pe/3jmaa6', date: '2026-03-01T00:26:00Z' },
+  { id: 'i27', code: 'I27', name: '내 남자의 남자', type: 'image', imageUrl: 'https://i.postimg.cc/NftG72LK/제목_없는_디자인.gif', link: 'https://posty.pe/1y4esf', date: '2026-03-12T00:27:00Z' },
+  { id: 'i28', code: 'I28', name: '신님의 신부', type: 'image', imageUrl: 'https://i.postimg.cc/sfmMHNfM/solo,1male-1445762169-07_09_03.jpg', link: 'https://posty.pe/62x780', date: '2026-03-12T00:28:00Z' },
+  { id: 'i29', code: 'I29', name: '레오카셀', type: 'image', imageUrl: 'https://i.postimg.cc/qvBpKqng/pyojiji.jpg', link: 'https://posty.pe/d6uhlm', date: '2026-03-12T00:29:00Z' },
+  { id: 'i30', code: 'I30', name: '튀어나와요 커신의 집', type: 'image', imageUrl: 'https://i.postimg.cc/kGWYf1ZR/1.jpg', link: 'https://posty.pe/dlj88h', date: '2026-03-12T00:30:00Z' },
+  { id: 'i31', code: 'I31', name: '잡아먹어요 커신의 저택', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/qpg5x8', date: '2026-03-12T00:31:00Z' },
+  { id: 'i32', code: 'I32', name: '발타자르', type: 'image', imageUrl: 'https://i.postimg.cc/TwJkQYS5/pyopyo.jpg', link: 'https://posty.pe/8x6ej7', date: '2026-03-12T00:32:00Z' },
+  { id: 'i33', code: 'I33', name: '가주들', type: 'image', imageUrl: 'https://i.postimg.cc/mDN8CRG2/1.jpg', link: 'https://posty.pe/ev7hwn', date: '2026-03-12T00:33:00Z' },
+  { id: 'i34', code: 'I34', name: '가주들S', type: 'image', imageUrl: 'https://i.postimg.cc/yNyM2MzV/표지1111.jpg', link: 'https://posty.pe/zuzkpc', date: '2026-03-12T00:34:00Z' },
+  { id: 'i35', code: 'I35', name: '나황심', type: 'image', imageUrl: 'https://i.postimg.cc/tJnqccP0/112.jpg', link: 'https://posty.pe/a856ym', date: '2026-03-12T00:35:00Z' },
+  { id: 'i36', code: 'I36', name: '최성필', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/1k0nzn', date: '2026-03-12T00:36:00Z' },
+  { id: 'i37', code: 'I37', name: '잘못 주웠다', type: 'image', imageUrl: 'https://i.postimg.cc/3x7zSd9P/멈머쿤.jpg', link: 'https://posty.pe/f5uiup', date: '2026-03-12T00:37:00Z' },
+  { id: 'i38', code: 'I38', name: '황보 현', type: 'image', imageUrl: 'https://i.postimg.cc/1X4FX2qq/의사.jpg', link: 'https://posty.pe/exmx6z', date: '2026-03-12T00:38:00Z' },
+  { id: 'i39', code: 'I39', name: '크리스마스 이미지', type: 'image', imageUrl: 'https://i.postimg.cc/G2TSvdG3/신목크리스마스.jpg', link: 'https://posty.pe/qt2y09', date: '2026-03-12T00:39:00Z' },
+  { id: 'i40', code: 'I40', name: '치비 배경화면 공유1 - 신목/황보현/나황심/코르벤/바실', type: 'image', imageUrl: 'https://i.postimg.cc/nc4gdF5m/예.png', link: 'https://posty.pe/7oe87j', date: '2026-03-13T00:40:00Z' },
+  { id: 'i41', code: 'I41', name: '치비 배경화면 공유2 - 켈른/카를하인츠/카실리안', type: 'image', imageUrl: 'https://i.postimg.cc/5NBTP4Gv/예2.png', link: 'https://posty.pe/iv2ru6', date: '2026-03-13T00:41:00Z' },
+  { id: 'i42', code: 'I42', name: '치비 배경화면 공유3 - 범희성/령휘/석무열', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/lih8ni', date: '2026-03-13T00:42:00Z' },
+  { id: 'i43', code: 'I43', name: '치비 배경화면 공유4 - 레오카셀/루콘/탐미르/시우', type: 'image', imageUrl: 'https://i.postimg.cc/sDNZjLH8/산타레오1.jpg', link: 'https://posty.pe/atz119', date: '2026-03-13T00:43:00Z' },
+  { id: 'i44', code: 'I44', name: '코르벤 개인챗 B컷', type: 'image', imageUrl: 'https://i.postimg.cc/rpjRcm3N/표표표.jpg', link: 'https://posty.pe/suxvxq', date: '2026-03-13T00:44:00Z' },
+  { id: 'i45', code: 'I45', name: '코르벤 개인챗 검열컷', type: 'image', imageUrl: 'https://i.postimg.cc/3x7zSd9P/멈머쿤.jpg', link: 'https://posty.pe/3bt1kt', date: '2026-03-13T00:45:00Z' },
+  { id: 'i46', code: 'I46', name: '구단주님 아무래도~ B컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/epdkp4', date: '2026-03-13T00:46:00Z' },
+  { id: 'i47', code: 'I47', name: '구단주님 아무래도~ A컷', type: 'image', imageUrl: 'https://dummyimage.com/400x400/000000/000000', link: 'https://posty.pe/r87gmr', date: '2026-03-13T00:47:00Z' },
+  { id: 'i48', code: 'I48', name: '성인용품 개발팀~ B컷', type: 'image', imageUrl: 'https://i.postimg.cc/vZVwXQZ6/1안표지.jpg', link: 'https://posty.pe/3o91q0', date: '2026-03-13T00:48:00Z' },
+  { id: 'i49', code: 'I49', name: '성인용품 개발팀~ A컷', type: 'image', imageUrl: 'https://i.postimg.cc/vZVwXQZ6/1안표지.jpg', link: 'https://posty.pe/8ko65v', date: '2026-03-13T00:49:00Z' },
+  { id: 'i50', code: 'I50', name: '바실 개인챗 19컷', type: 'image', imageUrl: 'https://i.postimg.cc/Gmr67Hzf/늑대쿤.jpg', link: 'https://posty.pe/z9dn81', date: '2026-03-13T00:50:00Z' },
+  { id: 'i51', code: 'I51', name: '바실 개인챗 일상컷', type: 'image', imageUrl: 'https://i.postimg.cc/Wb81wCR6/11.jpg', link: 'https://posty.pe/aljk9f', date: '2026-03-13T00:51:00Z' },
+  { id: 'i52', code: 'I52', name: '마티니 블루 최해건', type: 'image', imageUrl: 'https://i.postimg.cc/htcDRV1p/선주_표지.jpg', link: 'https://posty.pe/m10gbo', date: '2026-03-13T00:52:00Z' },
+  { id: 'i53', code: 'I53', name: '고언집', type: 'image', imageUrl: 'https://i.postimg.cc/qqd7906h/고언집.jpg', link: 'https://posty.pe/apq3nl', date: '2026-03-13T00:53:00Z' },
+  { id: 'i54', code: 'I54', name: '빛만승', type: 'image', imageUrl: 'https://i.postimg.cc/Gt1pZrTT/빛만승.jpg', link: 'https://posty.pe/2ppo21', date: '2026-03-13T00:54:00Z' },
+  { id: 'i55', code: 'I55', name: '선즈옌', type: 'image', imageUrl: 'https://i.postimg.cc/FKnRWVwZ/1011.jpg', link: 'https://posty.pe/uw4yz9', date: '2026-03-13T00:55:00Z' },
+  { id: 'i56', code: 'I56', name: '김영준', type: 'image', imageUrl: 'https://i.postimg.cc/Kc9kndvk/332.jpg', link: 'https://posty.pe/izpmqx', date: '2026-03-13T00:56:00Z' },
+  { id: 'i57', code: 'I57', name: '엘리오르', type: 'image', imageUrl: 'https://i.postimg.cc/CKBWXM96/표지2.jpg', link: 'https://posty.pe/sci3fp', date: '2026-03-13T00:57:00Z' },
+  { id: 'i58', code: 'I58', name: '알리스테어/에드먼드/발테마르', type: 'image', imageUrl: 'https://i.postimg.cc/HLDHv6wF/ss.jpg', link: 'https://posty.pe/jbo26u', date: '2026-03-13T00:58:00Z' },
+  { id: 'i59', code: 'I59', name: '카샤엘', type: 'image', imageUrl: 'https://i.postimg.cc/gkgg6HNH/pp1.jpg', link: 'https://posty.pe/n9bpga', date: '2026-03-13T00:59:00Z' },
 
   // Worldview
-  { id: 'w1', code: 'W1', name: '사신수 세계관', type: 'worldview', link: 'https://posty.pe/rq1w6b' },
-  { id: 'w2', code: 'W2', name: '수인 세계관 - instimate', type: 'worldview', link: 'https://posty.pe/yn5oz4' },
-  { id: 'w3', code: 'W3', name: '계략 소꿉친구', type: 'worldview', link: 'https://posty.pe/zks0y2' },
-  { id: 'w4', code: 'W4', name: '루콘 스포일러 인적사항', type: 'worldview', link: 'https://posty.pe/jod7ki' },
-  { id: 'w5', code: 'W5', name: '나황심 스포 정보', type: 'worldview', link: 'https://posty.pe/7dxqbl' },
-  { id: 'w6', code: 'W6', name: '보호라는 이름아래 - 리의중', type: 'worldview', link: 'https://posty.pe/o5iqhi' },
+  { id: 'w1', code: 'W1', name: '사신수 세계관', type: 'worldview', link: 'https://posty.pe/rq1w6b', date: '2026-03-12T01:00:00Z' },
+  { id: 'w2', code: 'W2', name: '수인 세계관 - instimate', type: 'worldview', link: 'https://posty.pe/yn5oz4', date: '2026-03-12T01:01:00Z' },
+  { id: 'w3', code: 'W3', name: '계략 소꿉친구', type: 'worldview', link: 'https://posty.pe/zks0y2', date: '2026-03-12T01:02:00Z' },
+  { id: 'w4', code: 'W4', name: '루콘 스포일러 인적사항', type: 'worldview', link: 'https://posty.pe/jod7ki', date: '2026-03-12T01:03:00Z' },
+  { id: 'w5', code: 'W5', name: '나황심 스포 정보', type: 'worldview', link: 'https://posty.pe/7dxqbl', date: '2026-03-12T01:04:00Z' },
+  { id: 'w6', code: 'W6', name: '보호라는 이름아래 - 리의중', type: 'worldview', link: 'https://posty.pe/o5iqhi', date: '2026-03-12T01:05:00Z' },
 
   // Logs
-  { id: 'l1', code: 'L1', name: '강태범 프로챗', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/377cgz' },
-  { id: 'l2', code: 'L2', name: '범희성 서방님', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/z1m3hl' },
-  { id: 'l3', code: 'L3', name: '범희성 제미나이3.1 문체 개편', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/hc39qo' },
-  { id: 'l4', code: 'L4', name: '내 남자의 남자', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/667gjq' },
+  { id: 'l1', code: 'L1', name: '강태범 프로챗', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/377cgz', date: '2026-03-12T01:06:00Z' },
+  { id: 'l2', code: 'L2', name: '범희성 서방님', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/z1m3hl', date: '2026-03-12T01:07:00Z' },
+  { id: 'l3', code: 'L3', name: '범희성 제미나이3.1 문체 개편', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/hc39qo', date: '2026-03-12T01:08:00Z' },
+  { id: 'l4', code: 'L4', name: '내 남자의 남자', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/667gjq', date: '2026-03-12T01:09:00Z' },
 ];
 
 export default function App() {
@@ -96,7 +96,13 @@ export default function App() {
 
   const images = filteredData.filter(item => item.type === 'image').reverse();
   const worldviews = filteredData.filter(item => item.type === 'worldview');
-  const logs = filteredData.filter(item => item.type === 'log');
+  const logs = filteredData.filter(item => item.type === 'log').reverse();
+
+  const recentUpdates = useMemo(() => {
+    return [...archiveData]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 4);
+  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -137,11 +143,11 @@ export default function App() {
             >
               <nav className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-2">
                 <button 
-                  onClick={() => scrollToSection('category-e')} 
+                  onClick={() => scrollToSection('category-i')} 
                   className="flex items-center gap-3 text-left px-4 py-4 rounded-xl hover:bg-white/5 text-lg font-medium transition-colors text-white"
                 >
                   <ImageIcon className="text-blue-400" size={20} />
-                  Category E: Image Archive
+                  Category I: Image Archive
                 </button>
                 <button 
                   onClick={() => scrollToSection('category-w')} 
@@ -212,7 +218,7 @@ export default function App() {
             </div>
             <input
               type="text"
-              placeholder="이름이나 코드로 검색 (예: E1, W1)..."
+              placeholder="이름이나 코드로 검색 (예: I1, W1)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-6 text-lg text-white placeholder:text-[#C0C4CC]/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/10 transition-all shadow-lg shadow-black/20"
@@ -220,11 +226,44 @@ export default function App() {
           </div>
         </section>
 
-        {/* Category 1: Image Archive (E1~) */}
-        <section id="category-e" className="mb-20">
+        {/* Recent Updates Section */}
+        <section className="mb-20">
+          <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+            <Sparkles className="text-yellow-400" size={28} />
+            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">최신 업데이트</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {recentUpdates.map(item => (
+              <a 
+                key={`recent-${item.id}`} 
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col justify-between p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg shadow-black/20"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm font-mono text-[#C0C4CC]/60 bg-black/40 px-2 py-1 rounded-md">{item.code}</span>
+                    <ExternalLink size={16} className="text-[#C0C4CC]/40 group-hover:text-white transition-colors" />
+                  </div>
+                  <h3 className="text-lg font-medium text-white group-hover:text-blue-400 transition-colors line-clamp-2">
+                    {item.name}
+                  </h3>
+                </div>
+                <div className="mt-4 text-xs text-[#C0C4CC]/50">
+                  {new Date(item.date).toLocaleDateString('ko-KR')}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* Category 1: Image Archive (I1~) */}
+        <section id="category-i" className="mb-20">
           <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
             <ImageIcon className="text-blue-400" size={28} />
-            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Image Archive <span className="text-base font-normal text-[#C0C4CC]/50 ml-2 font-mono">E1~</span></h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Image Archive <span className="text-base font-normal text-[#C0C4CC]/50 ml-2 font-mono">I1~</span></h2>
           </div>
           
           {images.length > 0 ? (
