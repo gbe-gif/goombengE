@@ -78,6 +78,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
               <option value="image" className="bg-[#12182B]">Image Archive (이미지)</option>
               <option value="worldview" className="bg-[#12182B]">Worldview (세계관)</option>
               <option value="log" className="bg-[#12182B]">Test Log (로그)</option>
+              <option value="script" className="bg-[#12182B]">User Script (유저 스크립트)</option>
             </select>
           </div>
         </div>

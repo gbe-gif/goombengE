@@ -2,7 +2,7 @@ export interface ArchiveItem {
   id: string;
   code: string;
   name: string;
-  type: 'image' | 'worldview' | 'log';
+  type: 'image' | 'worldview' | 'log' | 'script';
   imageUrl?: string;
   link?: string;
   date: string;
@@ -71,6 +71,9 @@ export const initialArchiveData: ArchiveItem[] = [
   { id: 'i57', code: 'I57', name: '엘리오르', type: 'image', imageUrl: 'https://i.postimg.cc/CKBWXM96/표지2.jpg', link: 'https://posty.pe/sci3fp', date: '2026-03-13T00:57:00Z', isVisible: true },
   { id: 'i58', code: 'I58', name: '알리스테어/에드먼드/발테마르', type: 'image', imageUrl: 'https://i.postimg.cc/HLDHv6wF/ss.jpg', link: 'https://posty.pe/jbo26u', date: '2026-03-13T00:58:00Z', isVisible: true },
   { id: 'i59', code: 'I59', name: '카샤엘', type: 'image', imageUrl: 'https://i.postimg.cc/gkgg6HNH/pp1.jpg', link: 'https://posty.pe/n9bpga', date: '2026-03-13T00:59:00Z', isVisible: true },
+
+  // Scripts
+  { id: 's1', code: 'S1', name: '유저 스크립트 공유', type: 'script', imageUrl: 'https://gbe88.uk/notice/o2.webp', link: 'https://github.com/goombenge443-svg/summarize_memory', date: '2026-07-01T00:00:00Z', isVisible: true },
 
   // Worldview
   { id: 'w1', code: 'W1', name: '사신수 세계관', type: 'worldview', link: 'https://posty.pe/rq1w6b', date: '2026-03-12T01:00:00Z', isVisible: true },

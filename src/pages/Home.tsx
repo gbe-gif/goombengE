@@ -39,6 +39,7 @@ export default function Home() {
   const images = filteredData.filter(item => item.type === 'image');
   const worldviews = filteredData.filter(item => item.type === 'worldview');
   const logs = filteredData.filter(item => item.type === 'log');
+  const scripts = filteredData.filter(item => item.type === 'script');
 
   const recentUpdates = useMemo(() => {
     return [...filteredData]
@@ -81,12 +82,12 @@ export default function Home() {
       const result = await signInWithPopup(auth, provider);
       
       if (result.user.email !== 'workingsh2716@gmail.com') {
-        alert('관리자 권한이 없는 계정입니다.');
+        alert(`관리자 권한이 없는 계정입니다. 로그인된 이메일: ${result.user.email}`);
         await auth.signOut();
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('로그인에 실패했습니다.');
+      alert(`로그인에 실패했습니다. 사유: ${err.message || '알 수 없는 오류'}`);
     } finally {
       setIsLoggingIn(false);
     }
@@ -215,35 +216,38 @@ export default function Home() {
             <p className="text-[#C0C4CC]/80 text-sm md:text-base">환영합니다. 기록을 열람하세요.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Image 1 */}
-            <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden group border border-white/10 bg-black/50">
-              <img 
-                src="https://i.postimg.cc/Y9rn7ynV/TA_2026_03_12_11_07_26_solo_male_1592326835_0.png" 
-                alt="Hero Image 1" 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1021] via-[#0B1021]/40 to-transparent opacity-90" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <h2 className="text-xl md:text-2xl font-medium text-white tracking-tight">(허전해서 넣었어요)</h2>
-              </div>
+          {scripts.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {scripts.map(script => (
+                <div key={script.id} className="w-full">
+                  <a 
+                    href={script.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={clsx(
+                      "relative block w-full aspect-[2/1] md:aspect-[3/1] rounded-2xl overflow-hidden group border border-white/10 bg-black/50 shadow-lg shadow-black/20",
+                      script.isVisible === false ? "opacity-50 grayscale" : ""
+                    )}
+                  >
+                    <AdminItemOverlay item={script} />
+                    <img 
+                      src={script.imageUrl || "https://gbe88.uk/notice/o2.webp"} 
+                      alt={script.name} 
+                      className="w-full h-full object-cover object-bottom transition-transform duration-1000 group-hover:scale-105 opacity-90"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B1021] via-transparent to-transparent opacity-80" />
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <h2 className="text-xl md:text-2xl font-medium text-white tracking-tight flex items-center gap-2">
+                        {script.name}
+                        <ExternalLink size={20} className="text-white/60" />
+                      </h2>
+                    </div>
+                  </a>
+                </div>
+              ))}
             </div>
-            
-            {/* Image 2 */}
-            <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden group border border-white/10 bg-black/50">
-              <img 
-                src="https://i.postimg.cc/G2L7RS7Z/TA_2026_03_12_10_47_34_solo_femal_1824067726_1.png" 
-                alt="Hero Image 2" 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1021] via-[#0B1021]/40 to-transparent opacity-90" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <h2 className="text-xl md:text-2xl font-medium text-white tracking-tight">(어서오세요)</h2>
-              </div>
-            </div>
-          </div>
+          )}
         </section>
 
         {/* Portal-style Search Bar */}
