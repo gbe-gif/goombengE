@@ -1,0 +1,40 @@
+{
+  "collections": [
+    {
+      "name": "content",
+      "description": "Stores all archive content including images, worldviews, and logs.",
+      "securityRules": {
+        "read": "true",
+        "create": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'",
+        "update": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'",
+        "delete": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'"
+      },
+      "fields": [
+        { "name": "code", "type": "string" },
+        { "name": "name", "type": "string" },
+        { "name": "type", "type": "string" },
+        { "name": "imageUrl", "type": "string" },
+        { "name": "link", "type": "string" },
+        { "name": "date", "type": "string" },
+        { "name": "content", "type": "string" },
+        { "name": "isVisible", "type": "boolean" },
+        { "name": "order", "type": "number" }
+      ]
+    },
+    {
+      "name": "categories",
+      "description": "Stores custom categories for the site.",
+      "securityRules": {
+        "read": "true",
+        "create": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'",
+        "update": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'",
+        "delete": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'"
+      },
+      "fields": [
+        { "name": "id", "type": "string" },
+        { "name": "name", "type": "string" },
+        { "name": "description", "type": "string" }
+      ]
+    }
+  ]
+}
