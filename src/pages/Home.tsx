@@ -1,31 +1,40 @@
 import { useState, useMemo } from 'react';
-import { Menu, X, Search, Image as ImageIcon, FileText, Database, ChevronDown, ExternalLink, Sparkles } from 'lucide-react';
+import { Menu, X, Search, Image as ImageIcon, FileText, Database, ChevronDown, ExternalLink, Sparkles, Plus, Edit2, Trash2, Eye, EyeOff, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useContent } from '../hooks/useContent';
+import { useAuth } from '../hooks/useAuth';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Modal from '../components/Modal';
 import { Link } from 'react-router-dom';
+import { db, auth } from '../lib/firebase';
+import { doc, deleteDoc, setDoc } from 'firebase/firestore';
+import { signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import ContentForm from '../admin/ContentForm';
+import { ArchiveItem } from '../data/mockData';
 
 export default function Home() {
   const { content: archiveData, loading } = useContent();
+  const { isAdmin } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [visibleImagesCount, setVisibleImagesCount] = useState(8);
   const [selectedLog, setSelectedLog] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<ArchiveItem | null | undefined>(undefined);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Filter data based on search query (name or code)
   const filteredData = useMemo(() => {
     const query = searchQuery.toLowerCase();
     // Only show visible items for non-admin
-    const visibleData = archiveData.filter(item => item.isVisible !== false);
+    const visibleData = isAdmin ? archiveData : archiveData.filter(item => item.isVisible !== false);
     return visibleData.filter(item => 
       item.name.toLowerCase().includes(query) || 
       item.code.toLowerCase().includes(query)
     );
-  }, [searchQuery, archiveData]);
+  }, [searchQuery, archiveData, isAdmin]);
 
   const images = filteredData.filter(item => item.type === 'image');
   const worldviews = filteredData.filter(item => item.type === 'worldview');
@@ -47,6 +56,59 @@ export default function Home() {
     }
   };
 
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      await deleteDoc(doc(db, 'content', id));
+    }
+  };
+
+  const handleToggleVisible = async (e: React.MouseEvent, item: ArchiveItem) => {
+    e.preventDefault();
+    e.stopPropagation();
+    await setDoc(doc(db, 'content', item.id), { ...item, isVisible: item.isVisible === false ? true : false });
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoggingIn(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      
+      if (result.user.email !== 'workingsh2716@gmail.com') {
+        alert('관리자 권한이 없는 계정입니다.');
+        await auth.signOut();
+      }
+    } catch (err) {
+      console.error(err);
+      alert('로그인에 실패했습니다.');
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const AdminItemOverlay = ({ item }: { item: ArchiveItem }) => {
+    if (!isAdmin) return null;
+    return (
+      <div className="absolute top-2 right-2 flex gap-1 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditingItem(item); }} className="p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-md backdrop-blur-sm border border-white/10" title="수정">
+          <Edit2 size={14} />
+        </button>
+        <button onClick={(e) => handleToggleVisible(e, item)} className="p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-md backdrop-blur-sm border border-white/10" title="공개/비공개 토글">
+          {item.isVisible !== false ? <Eye size={14} /> : <EyeOff size={14} className="text-red-400" />}
+        </button>
+        <button onClick={(e) => handleDelete(e, item.id)} className="p-1.5 bg-black/60 hover:bg-black/80 text-red-400 rounded-md backdrop-blur-sm border border-white/10" title="삭제">
+          <Trash2 size={14} />
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-[#0B1021] text-[#C0C4CC] font-sans selection:bg-blue-500/30">
       {/* Header & Navigation */}
@@ -63,13 +125,34 @@ export default function Home() {
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
 
-          {/* Admin Login (Top Right) */}
-          <Link 
-            to="/admin" 
-            className="text-xs md:text-sm font-medium text-white/40 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/5"
-          >
-            관리자 로그인
-          </Link>
+          {/* Admin Tools (Top Right) */}
+          <div className="flex items-center gap-2">
+            {isAdmin ? (
+              <>
+                <button
+                  onClick={() => setEditingItem(null)}
+                  className="hidden md:flex items-center gap-2 text-xs md:text-sm font-medium text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 px-4 py-2 rounded-full border border-emerald-500/20 transition-colors"
+                >
+                  <Plus size={16} />
+                  새 콘텐츠
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="text-xs md:text-sm font-medium text-white/40 hover:text-red-400 transition-colors bg-white/5 hover:bg-red-500/10 px-3 py-1.5 rounded-full border border-white/5 hover:border-red-500/20"
+                >
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <button 
+                onClick={handleGoogleLogin}
+                disabled={isLoggingIn}
+                className="text-xs md:text-sm font-medium text-white/40 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/5 disabled:opacity-50"
+              >
+                {isLoggingIn ? '로딩중...' : '관리자 로그인'}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Slide-down Menu */}
@@ -104,13 +187,19 @@ export default function Home() {
                   <Database className="text-emerald-400" size={20} />
                   Category L: Test Logs
                 </button>
+                {isAdmin && (
+                  <button 
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setEditingItem(null);
+                    }}
+                    className="md:hidden flex items-center gap-3 text-left px-4 py-4 rounded-xl bg-emerald-500/10 text-emerald-400 text-lg font-medium transition-colors"
+                  >
+                    <Plus size={20} />
+                    새 콘텐츠 추가 (Admin)
+                  </button>
+                )}
               </nav>
-              
-              <div className="max-w-7xl mx-auto px-8 py-4 border-t border-white/5 flex justify-end">
-                <Link to="/admin" className="text-xs text-white/20 hover:text-white/60 transition-colors">
-                  Admin Login
-                </Link>
-              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -187,8 +276,12 @@ export default function Home() {
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col justify-between p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg shadow-black/20"
+                className={clsx(
+                  "group flex flex-col justify-between p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg shadow-black/20 relative",
+                  item.isVisible === false ? "opacity-50 grayscale" : ""
+                )}
               >
+                <AdminItemOverlay item={item} />
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm font-mono text-[#C0C4CC]/60 bg-black/40 px-2 py-1 rounded-md">{item.code}</span>
@@ -222,8 +315,12 @@ export default function Home() {
                     href={item.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg shadow-black/20"
+                  className={clsx(
+                    "group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg shadow-black/20 relative",
+                    item.isVisible === false ? "opacity-50 grayscale" : ""
+                  )}
                 >
+                  <AdminItemOverlay item={item} />
                   <div className="aspect-square overflow-hidden bg-black/40 relative">
                     <img 
                       src={item.imageUrl} 
@@ -277,8 +374,12 @@ export default function Home() {
                   href={item.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-between p-5 md:p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors shadow-lg shadow-black/20"
+                  className={clsx(
+                    "group flex items-center justify-between p-5 md:p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors shadow-lg shadow-black/20 relative",
+                    item.isVisible === false ? "opacity-50 grayscale" : ""
+                  )}
                 >
+                  <AdminItemOverlay item={item} />
                   <div className="flex items-center gap-4">
                     <span className="text-xs md:text-sm font-mono font-semibold text-purple-400 bg-purple-400/10 px-3 py-1.5 rounded-md shrink-0">{item.code}</span>
                     <h3 className="text-base md:text-lg font-medium text-white">{item.name}</h3>
@@ -317,10 +418,12 @@ export default function Home() {
                     key={item.id} 
                     {...props}
                     className={clsx(
-                      "group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg shadow-black/20",
-                      isMarkdown ? "text-left" : ""
+                      "group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg shadow-black/20 relative",
+                      isMarkdown ? "text-left" : "",
+                      item.isVisible === false ? "opacity-50 grayscale" : ""
                     )}
                   >
+                    <AdminItemOverlay item={item} />
                     <div className="aspect-square overflow-hidden bg-black/40 relative">
                       <img 
                         src={item.imageUrl || `https://dummyimage.com/400x400/0B1021/10B981&text=${item.code}`} 
@@ -364,6 +467,15 @@ export default function Home() {
               </Markdown>
             </div>
           </div>
+        )}
+      </Modal>
+
+      <Modal isOpen={editingItem !== undefined} onClose={() => setEditingItem(undefined)}>
+        {editingItem !== undefined && (
+          <ContentForm 
+            item={editingItem} 
+            onClose={() => setEditingItem(undefined)} 
+          />
         )}
       </Modal>
     </div>
