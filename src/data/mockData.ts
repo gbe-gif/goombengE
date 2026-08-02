@@ -95,4 +95,12 @@ export const initialArchiveData: ArchiveItem[] = [
   { id: 'l2', code: 'L2', name: '범희성 서방님', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/z1m3hl', date: '2026-03-12T01:07:00Z', isVisible: true },
   { id: 'l3', code: 'L3', name: '범희성 제미나이3.1 문체 개편', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/hc39qo', date: '2026-03-12T01:08:00Z', isVisible: true },
   { id: 'l4', code: 'L4', name: '내 남자의 남자', type: 'log', imageUrl: 'https://dummyimage.com/400x400/0B1021/10B981&text=LOG', link: 'https://posty.pe/667gjq', date: '2026-03-12T01:09:00Z', isVisible: true },
+  
+  // Works
+  { id: 'work1', name: '헥터 설정집', type: 'work', platform: '크랙 오리지널', genre: '판타지', status: '연재중', date: '2026-08-01T10:00:00Z', isVisible: true, excerpt: '헥터의 모든 설정과 비하인드 스토리' },
+  { id: 'work2', name: '클라라 프로필', type: 'work', platform: '크랙 온리', genre: '로맨스', status: '완결', date: '2026-08-02T11:00:00Z', isVisible: true, excerpt: '주인공 클라라의 상세 프로필' },
+
+  // Notices
+  { id: 'n1', name: '사이트 개편 안내', type: 'notice', date: '2026-08-03T00:00:00Z', isVisible: true, excerpt: '사이트가 게으른굼벵이 공식 홈페이지로 개편되었습니다.' },
+  { id: 'n2', name: 'Resources 업데이트', type: 'notice', date: '2026-08-03T01:00:00Z', isVisible: true, excerpt: '새로운 유저 스크립트가 리소스 페이지에 추가되었습니다.' },
 ];

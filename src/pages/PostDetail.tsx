@@ -3,6 +3,7 @@ import { useContent } from '../hooks/useContent';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ExternalLink, ArrowLeft, Download } from 'lucide-react';
+import { formatKST } from '../lib/formatDate';
 
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
@@ -31,11 +32,11 @@ export default function PostDetail() {
             {post.type}
           </span>
           <span className="text-[#C0C4CC]/60 text-sm">
-            작성일: {new Date(post.date).toLocaleDateString()}
+            작성일: {formatKST(post.date)}
           </span>
           {post.updatedAt && (
             <span className="text-[#C0C4CC]/60 text-sm">
-              | 수정일: {new Date(post.updatedAt).toLocaleDateString()}
+              | 수정일: {formatKST(post.updatedAt)}
             </span>
           )}
         </div>
@@ -64,7 +65,7 @@ export default function PostDetail() {
         )}
       </div>
 
-      <div className="prose prose-invert prose-emerald max-w-none">
+      <div className="prose prose-invert prose-emerald max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-h5:text-lg prose-h5:font-semibold prose-h6:text-base prose-headings:text-white">
         {post.imageUrl && (
           <img 
             src={post.imageUrl} 

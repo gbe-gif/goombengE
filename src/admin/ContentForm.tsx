@@ -120,7 +120,11 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white/5 p-4 rounded-xl border border-white/10">
             <div>
               <label className="block text-sm font-medium text-white/60 mb-2">플랫폼</label>
-              <input name="platform" value={formData.platform || ''} onChange={handleChange} placeholder="예: 크리지널" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
+              <input name="platform" list="platform-options" value={formData.platform || ''} onChange={handleChange} placeholder="예: 크리지널" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
+              <datalist id="platform-options">
+                <option value="크랙 오리지널" />
+                <option value="크랙 온리" />
+              </datalist>
             </div>
             <div>
               <label className="block text-sm font-medium text-white/60 mb-2">장르</label>
@@ -145,18 +149,6 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
             </div>
           </div>
         )}
-
-        <div>
-          <label className="block text-sm font-medium text-white/60 mb-2">날짜</label>
-          <input 
-            type="datetime-local"
-            name="date" 
-            value={formData.date ? new Date(formData.date).toISOString().slice(0, 16) : ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, date: new Date(e.target.value).toISOString() }))} 
-            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 [color-scheme:dark]" 
-            required 
-          />
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>

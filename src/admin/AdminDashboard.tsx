@@ -7,6 +7,7 @@ import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { ArchiveItem } from '../data/mockData';
 import ContentForm from './ContentForm';
 import { Navigate } from 'react-router-dom';
+import { formatKST } from '../lib/formatDate';
 
 export default function AdminDashboard() {
   const { content, loading: contentLoading } = useContent();
@@ -143,8 +144,8 @@ export default function AdminDashboard() {
                   {item.code && <span className="mr-2 text-xs text-blue-400 bg-blue-400/10 px-1 rounded">{item.code}</span>}
                   {item.name}
                 </td>
-                <td className="px-6 py-4 text-white/60 font-mono text-xs">{new Date(item.date).toLocaleDateString()}</td>
-                <td className="px-6 py-4 text-white/60 font-mono text-xs">{item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : '-'}</td>
+                <td className="px-6 py-4 text-white/60 font-mono text-xs">{formatKST(item.date)}</td>
+                <td className="px-6 py-4 text-white/60 font-mono text-xs">{item.updatedAt ? formatKST(item.updatedAt) : '-'}</td>
                 <td className="px-6 py-4">
                   <button 
                     onClick={() => handleToggleVisible(item)}

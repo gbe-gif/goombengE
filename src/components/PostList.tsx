@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import clsx from 'clsx';
 import { EyeOff } from 'lucide-react';
+import { formatKST } from '../lib/formatDate';
 
 interface PostListProps {
   title: string;
@@ -47,7 +48,7 @@ export default function PostList({ title, icon, items, emptyMessage = "등록된
                   )}
                 </div>
                 <span className="text-sm text-[#C0C4CC]/60 font-mono">
-                  {new Date(item.date).toLocaleDateString()}
+                  {formatKST(item.date)}
                 </span>
               </div>
               <h3 className="text-xl font-bold text-white mb-2">{item.name}</h3>
