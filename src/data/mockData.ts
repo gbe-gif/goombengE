@@ -12,6 +12,7 @@ export interface ArchiveItem {
   platform?: string; // For works
   genre?: string; // For works
   status?: string; // For works
+  tags?: string[]; // For works
   version?: string; // For resources
   downloadUrl?: string; // For resources
   excerpt?: string; // Short preview

@@ -31,13 +31,13 @@ export default function PostList({ title, icon, items, emptyMessage = "등록된
               key={item.id}
               to={`/post/${item.id}`}
               className={clsx(
-                "block p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all shadow-lg shadow-black/20",
+                "flex p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all shadow-lg shadow-black/20 gap-6 group",
                 item.isVisible === false && !isAdmin ? "hidden" : "",
                 item.isVisible === false && isAdmin ? "opacity-50 grayscale" : ""
               )}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
+              <div className="flex-1 min-w-0 flex flex-col">
+                <div className="flex items-center gap-3 mb-3">
                   <span className="px-2 py-1 bg-black/40 rounded-md text-xs font-medium text-[#C0C4CC]/80 uppercase">
                     {item.type}
                   </span>
@@ -46,14 +46,19 @@ export default function PostList({ title, icon, items, emptyMessage = "등록된
                       <EyeOff size={12} /> 비공개
                     </span>
                   )}
+                  <span className="text-sm text-[#C0C4CC]/60 font-mono ml-auto">
+                    {formatKST(item.updatedAt || item.date)}
+                  </span>
                 </div>
-                <span className="text-sm text-[#C0C4CC]/60 font-mono">
-                  {formatKST(item.date)}
-                </span>
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors line-clamp-2">{item.name}</h3>
+                {item.excerpt && (
+                  <p className="text-[#C0C4CC]/80 text-sm line-clamp-2 mt-auto">{item.excerpt}</p>
+                )}
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">{item.name}</h3>
-              {item.excerpt && (
-                <p className="text-[#C0C4CC]/80 text-sm line-clamp-2">{item.excerpt}</p>
+              {item.imageUrl && (
+                <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-black/40 border border-white/5">
+                  <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
+                </div>
               )}
             </Link>
           ))

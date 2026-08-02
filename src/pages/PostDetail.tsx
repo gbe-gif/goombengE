@@ -46,6 +46,43 @@ export default function PostDetail() {
           <p className="text-lg text-[#C0C4CC]/80 mb-6 italic border-l-4 border-blue-500/50 pl-4">{post.excerpt}</p>
         )}
 
+        {post.type === 'work' && (
+          <div className="flex flex-wrap gap-4 mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
+            {post.platform && (
+              <div className="flex flex-col">
+                <span className="text-xs text-[#C0C4CC]/60 mb-1">플랫폼</span>
+                <span className="text-sm font-medium text-white">{post.platform}</span>
+              </div>
+            )}
+            {post.genre && (
+              <div className="flex flex-col">
+                <span className="text-xs text-[#C0C4CC]/60 mb-1">장르</span>
+                <span className="text-sm font-medium text-white">{post.genre}</span>
+              </div>
+            )}
+            {post.status && (
+              <div className="flex flex-col">
+                <span className="text-xs text-[#C0C4CC]/60 mb-1">연재 상태</span>
+                <span className="text-sm font-medium text-white">{post.status}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {post.type === 'work' && post.tags && post.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            {post.tags.map(tag => (
+              <Link
+                key={tag}
+                to={`/works?tag=${encodeURIComponent(tag)}`}
+                className="text-sm text-blue-400/80 bg-blue-500/10 hover:bg-blue-500/20 hover:text-blue-300 px-3 py-1.5 rounded-md transition-colors"
+              >
+                #{tag}
+              </Link>
+            ))}
+          </div>
+        )}
+
         {post.type === 'resource' && post.downloadUrl && (
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
             <div>

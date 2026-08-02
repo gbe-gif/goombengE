@@ -1,15 +1,18 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useContent } from '../hooks/useContent';
 import { ArchiveItem } from '../data/mockData';
-import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ExternalLink, Hash, X } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function WorksPage() {
   const { content } = useContent();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [platformFilter, setPlatformFilter] = useState<string>('all');
   const [genreFilter, setGenreFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  const selectedTag = searchParams.get('tag');
 
   const works = useMemo(() => {
     return content.filter(item => item.type === 'work').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -24,15 +27,40 @@ export default function WorksPage() {
       const matchPlatform = platformFilter === 'all' || work.platform === platformFilter;
       const matchGenre = genreFilter === 'all' || work.genre === genreFilter;
       const matchStatus = statusFilter === 'all' || work.status === statusFilter;
-      return matchPlatform && matchGenre && matchStatus;
+      const matchTag = !selectedTag || (work.tags && work.tags.includes(selectedTag));
+      return matchPlatform && matchGenre && matchStatus && matchTag;
     });
-  }, [works, platformFilter, genreFilter, statusFilter]);
+  }, [works, platformFilter, genreFilter, statusFilter, selectedTag]);
+
+  const handleClearTag = () => {
+    searchParams.delete('tag');
+    setSearchParams(searchParams);
+  };
+
+  const handleTagClick = (tag: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSearchParams({ tag });
+  };
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex items-center gap-3 mb-10 border-b border-white/10 pb-6">
-        <span className="text-4xl">🔎</span>
-        <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">전체 작품</h1>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 border-b border-white/10 pb-6">
+        <div className="flex items-center gap-3">
+          <span className="text-4xl">🔎</span>
+          <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">전체 작품</h1>
+        </div>
+        {selectedTag && (
+          <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full">
+            <span className="text-blue-400 font-medium flex items-center">
+              <Hash size={16} className="mr-1" />
+              {selectedTag}
+            </span>
+            <button onClick={handleClearTag} className="text-[#C0C4CC]/60 hover:text-white p-1 rounded-full transition-colors">
+              <X size={14} />
+            </button>
+          </div>
+        )}
       </div>
 
       {works.length === 0 ? (
@@ -73,7 +101,7 @@ export default function WorksPage() {
                   {work.imageUrl ? (
                     <img src={work.imageUrl} alt={work.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#C0C4CC]/30 font-bold text-2xl">{work.name}</div>
+                    <div className="w-full h-full flex items-center justify-center text-[#C0C4CC]/30 font-bold text-2xl p-6 text-center break-words">{work.name}</div>
                   )}
                   <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                     {work.platform && <span className="px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-xs font-medium text-white border border-white/10">{work.platform}</span>}
@@ -89,6 +117,20 @@ export default function WorksPage() {
                   {work.genre && <p className="text-sm text-[#C0C4CC]/60 mb-3">{work.genre}</p>}
                   {work.excerpt && <p className="text-[#C0C4CC]/80 text-sm line-clamp-2 flex-1 mb-4">{work.excerpt}</p>}
                   
+                  {work.tags && work.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {work.tags.map(tag => (
+                        <button
+                          key={tag}
+                          onClick={(e) => handleTagClick(tag, e)}
+                          className="text-xs text-blue-400/80 bg-blue-500/10 hover:bg-blue-500/20 hover:text-blue-300 px-2 py-1 rounded-md transition-colors"
+                        >
+                          #{tag}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
                   {work.link && (
                     <a href={work.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 mt-auto bg-blue-500/10 px-4 py-2 rounded-lg justify-center transition-colors">
                       보러 가기 <ExternalLink size={16} />

@@ -9,15 +9,21 @@ function PostItem({ item }: { item: ArchiveItem }) {
   return (
     <Link 
       to={`/post/${item.id}`}
-      className="block p-5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all shadow-lg shadow-black/20 flex flex-col h-full"
+      className="flex p-5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all shadow-lg shadow-black/20 gap-4 group"
     >
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs px-2 py-1 bg-black/40 rounded-md text-[#C0C4CC]/80 uppercase">{item.type}</span>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex items-center mb-2">
+          <span className="text-[10px] px-2 py-0.5 bg-black/40 rounded-md text-[#C0C4CC]/80 uppercase">{item.type}</span>
+        </div>
+        <h3 className="text-base sm:text-lg font-medium text-white mb-1 line-clamp-1 group-hover:text-blue-300 transition-colors">{item.name}</h3>
+        <span className="text-xs text-[#C0C4CC]/60 font-mono mb-2">{formatKST(item.updatedAt || item.date)}</span>
+        {item.excerpt && <p className="text-xs sm:text-sm text-[#C0C4CC]/80 line-clamp-2 mt-auto">{item.excerpt}</p>}
       </div>
-      <h3 className="text-lg font-medium text-white mb-2 line-clamp-2 flex-1">{item.name}</h3>
-      <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5">
-         <span className="text-xs text-[#C0C4CC]/60 font-mono">{formatKST(item.date)}</span>
-      </div>
+      {item.imageUrl && (
+        <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-xl overflow-hidden bg-black/40 border border-white/5">
+          <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
+        </div>
+      )}
     </Link>
   );
 }
@@ -80,7 +86,7 @@ export default function HomeDashboard() {
             더보기 <ChevronRight size={16} />
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {latest.map(item => (
             <PostItem key={item.id} item={item} />
           ))}
@@ -96,7 +102,7 @@ export default function HomeDashboard() {
             더보기 <ChevronRight size={16} />
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {updated.map(item => (
             <PostItem key={item.id} item={item} />
           ))}

@@ -32,6 +32,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
     }
   );
 
+  const [tagsInput, setTagsInput] = useState(item?.tags?.join(', ') || '');
   const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,6 +40,11 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
     setSaving(true);
     try {
       const dataToSave = { ...formData };
+      
+      if (dataToSave.type === 'work') {
+        dataToSave.tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
+      }
+      
       if (item) {
         dataToSave.updatedAt = new Date().toISOString();
       }
@@ -117,22 +123,34 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
         </div>
 
         {formData.type === 'work' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white/5 p-4 rounded-xl border border-white/10">
-            <div>
-              <label className="block text-sm font-medium text-white/60 mb-2">플랫폼</label>
-              <input name="platform" list="platform-options" value={formData.platform || ''} onChange={handleChange} placeholder="예: 크리지널" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
-              <datalist id="platform-options">
-                <option value="크랙 오리지널" />
-                <option value="크랙 온리" />
-              </datalist>
+          <div className="space-y-6 bg-white/5 p-4 rounded-xl border border-white/10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-white/60 mb-2">플랫폼</label>
+                <input name="platform" list="platform-options" value={formData.platform || ''} onChange={handleChange} placeholder="예: 크리지널" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
+                <datalist id="platform-options">
+                  <option value="크랙 오리지널" />
+                  <option value="크랙 온리" />
+                </datalist>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-white/60 mb-2">장르</label>
+                <input name="genre" value={formData.genre || ''} onChange={handleChange} placeholder="예: 판타지" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-white/60 mb-2">연재 상태</label>
+                <input name="status" value={formData.status || ''} onChange={handleChange} placeholder="예: 연재중" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
+              </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-white/60 mb-2">장르</label>
-              <input name="genre" value={formData.genre || ''} onChange={handleChange} placeholder="예: 판타지" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white/60 mb-2">연재 상태</label>
-              <input name="status" value={formData.status || ''} onChange={handleChange} placeholder="예: 연재중" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
+              <label className="block text-sm font-medium text-white/60 mb-2">태그 (쉼표로 구분)</label>
+              <input 
+                type="text" 
+                value={tagsInput} 
+                onChange={(e) => setTagsInput(e.target.value)} 
+                placeholder="예: 순애, 회귀, 집착" 
+                className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" 
+              />
             </div>
           </div>
         )}
@@ -187,7 +205,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
             />
             <div className="w-full h-96 bg-black/30 border border-white/5 rounded-lg p-4 overflow-y-auto">
               <div className="text-sm text-white/40 mb-2 border-b border-white/10 pb-2">미리보기</div>
-              <div className="prose prose-invert prose-emerald prose-sm max-w-none">
+              <div className="prose prose-invert prose-emerald prose-sm max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-h5:text-lg prose-h5:font-semibold prose-h6:text-base prose-headings:text-white">
                 <Markdown remarkPlugins={[remarkGfm]}>
                   {formData.content || '*내용이 없습니다.*'}
                 </Markdown>
