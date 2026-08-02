@@ -1,13 +1,20 @@
 export interface ArchiveItem {
   id: string;
-  code: string;
-  name: string;
-  type: 'image' | 'worldview' | 'log' | 'script';
+  code?: string;
+  name: string; // Title
+  type: 'image' | 'worldview' | 'log' | 'script' | 'notice' | 'resource' | 'work';
   imageUrl?: string;
   link?: string;
-  date: string;
-  content?: string;
+  date: string; // Created At
+  updatedAt?: string; // For "Recently Updated"
+  content?: string; // Markdown content
   isVisible?: boolean;
+  platform?: string; // For works
+  genre?: string; // For works
+  status?: string; // For works
+  version?: string; // For resources
+  downloadUrl?: string; // For resources
+  excerpt?: string; // Short preview
 }
 
 export const initialArchiveData: ArchiveItem[] = [

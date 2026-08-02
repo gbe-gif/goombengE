@@ -1,19 +1,26 @@
 import { useState } from 'react';
 import { useContent } from '../hooks/useContent';
+import { useAuth } from '../hooks/useAuth';
 import { Plus, Edit2, Trash2, Eye, EyeOff, Link as LinkIcon, Loader2 } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { ArchiveItem } from '../data/mockData';
 import ContentForm from './ContentForm';
+import { Navigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
-  const { content, loading } = useContent();
+  const { content, loading: contentLoading } = useContent();
+  const { isAdmin, loading: authLoading } = useAuth();
   const [editingItem, setEditingItem] = useState<ArchiveItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [quickUrl, setQuickUrl] = useState('');
   const [isQuickAdding, setIsQuickAdding] = useState(false);
 
-  if (loading) return <div className="text-white/60">로딩 중...</div>;
+  if (authLoading || contentLoading) return <div className="text-white/60 text-center py-20">로딩 중...</div>;
+
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
 
   const handleDelete = async (id: string) => {
     if (confirm('정말로 삭제하시겠습니까?')) {
@@ -31,10 +38,10 @@ export default function AdminDashboard() {
     
     setIsQuickAdding(true);
     try {
-      // Find the next I code
       const imageItems = content.filter(i => i.type === 'image');
       let maxCode = 0;
       imageItems.forEach(i => {
+        if (!i.code) return;
         const match = i.code.match(/I(\d+)/i);
         if (match) {
           const num = parseInt(match[1], 10);
@@ -49,7 +56,7 @@ export default function AdminDashboard() {
         name: `새 이미지 (${nextCode})`,
         type: 'image',
         imageUrl: quickUrl,
-        link: quickUrl, // Default link to the image itself
+        link: quickUrl,
         date: new Date().toISOString(),
         isVisible: true
       };
@@ -78,7 +85,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Quick Add Image URL */}
       <div className="bg-[#12182B] border border-white/10 rounded-xl p-6 shadow-lg shadow-black/20">
         <h3 className="text-lg font-medium text-white mb-4">빠른 이미지 추가</h3>
         <form onSubmit={handleQuickAdd} className="flex gap-4 items-center">
@@ -117,14 +123,14 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      <div className="bg-[#12182B] border border-white/10 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+      <div className="bg-[#12182B] border border-white/10 rounded-xl overflow-hidden shadow-lg shadow-black/20 overflow-x-auto">
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="uppercase tracking-wider border-b border-white/10 bg-white/5">
             <tr>
-              <th className="px-6 py-4 font-medium text-white/60">코드</th>
-              <th className="px-6 py-4 font-medium text-white/60 w-full">제목</th>
               <th className="px-6 py-4 font-medium text-white/60">분류</th>
-              <th className="px-6 py-4 font-medium text-white/60">날짜</th>
+              <th className="px-6 py-4 font-medium text-white/60 w-full">제목</th>
+              <th className="px-6 py-4 font-medium text-white/60">작성일</th>
+              <th className="px-6 py-4 font-medium text-white/60">수정일</th>
               <th className="px-6 py-4 font-medium text-white/60">상태</th>
               <th className="px-6 py-4 font-medium text-white/60 text-right">관리</th>
             </tr>
@@ -132,10 +138,13 @@ export default function AdminDashboard() {
           <tbody className="divide-y divide-white/10">
             {content.map(item => (
               <tr key={item.id} className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-mono text-white/80">{item.code}</td>
-                <td className="px-6 py-4 font-medium truncate max-w-xs">{item.name}</td>
-                <td className="px-6 py-4 text-white/60">{item.type}</td>
-                <td className="px-6 py-4 text-white/60">{new Date(item.date).toLocaleDateString()}</td>
+                <td className="px-6 py-4 text-white/60 uppercase">{item.type}</td>
+                <td className="px-6 py-4 font-medium truncate max-w-xs">
+                  {item.code && <span className="mr-2 text-xs text-blue-400 bg-blue-400/10 px-1 rounded">{item.code}</span>}
+                  {item.name}
+                </td>
+                <td className="px-6 py-4 text-white/60 font-mono text-xs">{new Date(item.date).toLocaleDateString()}</td>
+                <td className="px-6 py-4 text-white/60 font-mono text-xs">{item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : '-'}</td>
                 <td className="px-6 py-4">
                   <button 
                     onClick={() => handleToggleVisible(item)}
