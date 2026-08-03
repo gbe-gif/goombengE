@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { ArchiveItem } from '../data/mockData';
 import { ChevronRight } from 'lucide-react';
 import { formatKST } from '../lib/formatDate';
+import { getCategoryLabel } from '../utils/category';
 
 function PostItem({ item }: { item: ArchiveItem }) {
   return (
@@ -13,7 +14,7 @@ function PostItem({ item }: { item: ArchiveItem }) {
     >
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="flex items-center mb-2">
-          <span className="text-[10px] px-2 py-0.5 bg-black/40 rounded-md text-[#C0C4CC]/80 uppercase">{item.type}</span>
+          <span className="text-[10px] px-2 py-0.5 bg-black/40 rounded-md text-[#C0C4CC]/80 uppercase">{getCategoryLabel(item.type)}</span>
         </div>
         <h3 className="text-base sm:text-lg font-medium text-white mb-1 line-clamp-1 group-hover:text-blue-300 transition-colors">{item.name}</h3>
         <span className="text-xs text-[#C0C4CC]/60 font-mono mb-2">{formatKST(item.updatedAt || item.date)}</span>
@@ -48,7 +49,7 @@ export default function HomeDashboard() {
   }, [content]);
 
   const pinned = useMemo(() => {
-    return content.filter(item => item.isPinned).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 2);
+    return content.filter(item => item.isPinned).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [content]);
 
   const latest = useMemo(() => {

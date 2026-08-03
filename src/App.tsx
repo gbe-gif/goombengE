@@ -8,6 +8,7 @@ import ArchivePage from './pages/ArchivePage';
 import ArchiveCategoryPage from './pages/ArchiveCategoryPage';
 import PostDetail from './pages/PostDetail';
 import AdminDashboard from './admin/AdminDashboard';
+import OOCPage from './pages/OOCPage';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/platforms" element={<PlatformsPage />} />
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/archive/:category" element={<ArchiveCategoryPage />} />
+          <Route path="/ooc" element={<OOCPage />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>

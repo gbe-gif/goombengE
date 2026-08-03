@@ -8,6 +8,7 @@ import { ArchiveItem } from '../data/mockData';
 import ContentForm from './ContentForm';
 import { Navigate } from 'react-router-dom';
 import { formatKST } from '../lib/formatDate';
+import { getCategoryLabel } from '../utils/category';
 
 export default function AdminDashboard() {
   const { content, loading: contentLoading } = useContent();
@@ -31,6 +32,10 @@ export default function AdminDashboard() {
 
   const handleToggleVisible = async (item: ArchiveItem) => {
     await setDoc(doc(db, 'content', item.id), { ...item, isVisible: item.isVisible === false ? true : false });
+  };
+
+  const handleTogglePinned = async (item: ArchiveItem) => {
+    await setDoc(doc(db, 'content', item.id), { ...item, isPinned: !item.isPinned });
   };
 
   const handleQuickAdd = async (e: React.FormEvent) => {
@@ -132,21 +137,28 @@ export default function AdminDashboard() {
               <th className="px-6 py-4 font-medium text-white/60 w-full">제목</th>
               <th className="px-6 py-4 font-medium text-white/60">작성일</th>
               <th className="px-6 py-4 font-medium text-white/60">수정일</th>
-              <th className="px-6 py-4 font-medium text-white/60">상태</th>
+              <th className="px-6 py-4 font-medium text-white/60">상태 & 고정</th>
               <th className="px-6 py-4 font-medium text-white/60 text-right">관리</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
             {content.map(item => (
               <tr key={item.id} className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 text-white/60 uppercase">{item.type}</td>
+                <td className="px-6 py-4 text-white/60">{getCategoryLabel(item.type)}</td>
                 <td className="px-6 py-4 font-medium truncate max-w-xs">
                   {item.code && <span className="mr-2 text-xs text-blue-400 bg-blue-400/10 px-1 rounded">{item.code}</span>}
                   {item.name}
                 </td>
                 <td className="px-6 py-4 text-white/60 font-mono text-xs">{formatKST(item.date)}</td>
                 <td className="px-6 py-4 text-white/60 font-mono text-xs">{item.updatedAt ? formatKST(item.updatedAt) : '-'}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 flex items-center gap-2">
+                  <button 
+                    onClick={() => handleTogglePinned(item)}
+                    className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${item.isPinned ? 'bg-yellow-500/20 text-yellow-400' : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/80'}`}
+                    title="Home 고정 토글"
+                  >
+                    <span className={item.isPinned ? 'opacity-100' : 'opacity-50 grayscale'}>⭐</span>
+                  </button>
                   <button 
                     onClick={() => handleToggleVisible(item)}
                     className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${item.isVisible !== false ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}
@@ -155,19 +167,21 @@ export default function AdminDashboard() {
                     {item.isVisible !== false ? '공개' : '비공개'}
                   </button>
                 </td>
-                <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
-                  <button 
-                    onClick={() => setEditingItem(item)}
-                    className="p-2 bg-white/5 hover:bg-white/10 text-white/80 rounded transition-colors"
-                  >
-                    <Edit2 size={16} />
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(item.id)}
-                    className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded transition-colors"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                <td className="px-6 py-4 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <button 
+                      onClick={() => setEditingItem(item)}
+                      className="p-2 bg-white/5 hover:bg-white/10 text-white/80 rounded transition-colors"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(item.id)}
+                      className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

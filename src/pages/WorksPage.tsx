@@ -45,10 +45,16 @@ export default function WorksPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 border-b border-white/10 pb-6">
-        <div className="flex items-center gap-3">
-          <span className="text-4xl">🔎</span>
-          <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">전체 작품</h1>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/10 pb-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <span className="text-4xl">📖</span>
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Works</h1>
+          </div>
+          <div className="flex gap-4">
+            <Link to="/works" className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">전체 작품</Link>
+            <Link to="/platforms" className="text-[#C0C4CC]/60 hover:text-white pb-1 transition-colors">플랫폼별 작품</Link>
+          </div>
         </div>
         {selectedTag && (
           <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full">

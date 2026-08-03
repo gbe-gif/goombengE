@@ -8,7 +8,11 @@ export default function ArchivePage() {
         <span className="text-4xl">🗃️</span>
         <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Archive</h1>
       </div>
-      <p className="text-[#C0C4CC]/80 mb-12 text-lg">기존 카테고리 보관소입니다. 열람할 기록을 선택하세요.</p>
+
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 mb-12">
+        <h2 className="text-xl font-bold text-blue-400 mb-2">포스타입 연동</h2>
+        <p className="text-[#C0C4CC]/80">이곳의 자료들은 게으른굼벵이 포스타입과 연동되어 있습니다. 열람할 기록을 선택하세요.</p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to="/archive/image" className="group bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-white/20 transition-all shadow-lg shadow-black/20 flex flex-col items-center text-center">

@@ -2,14 +2,18 @@ import { useParams, Link } from 'react-router-dom';
 import { useContent } from '../hooks/useContent';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ExternalLink, ArrowLeft, Download } from 'lucide-react';
+import { ExternalLink, ArrowLeft, Download, Copy, Check } from 'lucide-react';
 import { formatKST } from '../lib/formatDate';
+import { getCategoryLabel } from '../utils/category';
+import { useState } from 'react';
 
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
   const { content } = useContent();
 
   const post = content.find(item => item.id === id);
+
+  const [copied, setCopied] = useState(false);
 
   if (!post) {
     return (
@@ -29,7 +33,7 @@ export default function PostDetail() {
         </Link>
         <div className="flex items-center gap-3 mb-4">
           <span className="px-3 py-1 bg-white/10 text-white rounded-full text-sm uppercase tracking-wider font-medium">
-            {post.type}
+            {getCategoryLabel(post.type)}
           </span>
           <span className="text-[#C0C4CC]/60 text-sm">
             작성일: {formatKST(post.date)}
@@ -103,6 +107,22 @@ export default function PostDetail() {
       </div>
 
       <div className="prose prose-invert prose-emerald max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-h5:text-lg prose-h5:font-semibold prose-h6:text-base prose-headings:text-white">
+        {post.type === 'ooc' && (
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(post.content || '');
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
+              {copied ? '복사됨' : '복사하기'}
+            </button>
+          </div>
+        )}
+
         {post.imageUrl && (
           <img 
             src={post.imageUrl} 

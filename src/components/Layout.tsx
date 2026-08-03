@@ -59,8 +59,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/latest" className="text-xl" title="Latest">💡</Link>
             <Link to="/updated" className="text-xl" title="Updated">🔥</Link>
             <Link to="/resources" className="text-xl" title="Resources">🎁</Link>
-            <Link to="/works" className="text-xl" title="Works">🔎</Link>
+            <Link to="/works" className="text-xl" title="Works">📖</Link>
             <Link to="/archive" className="text-xl" title="Archive">🗃️</Link>
+            <Link to="/ooc" className="text-xl" title="OOC Playground">🎲</Link>
           </div>
         </div>
 
@@ -90,14 +91,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link onClick={closeMenu} to="/resources" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
                   <span className="text-xl">🎁</span> Resources
                 </Link>
-                <Link onClick={closeMenu} to="/works" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
-                  <span className="text-xl">🔎</span> 전체 작품
-                </Link>
-                <Link onClick={closeMenu} to="/platforms" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
-                  <span className="text-xl">🔗</span> 플랫폼별 작품
-                </Link>
+                <div className="px-4 py-3">
+                  <div className="flex items-center gap-3 text-lg font-medium text-white mb-2">
+                    <span className="text-xl">📖</span> Works
+                  </div>
+                  <div className="pl-9 flex flex-col gap-2">
+                    <Link onClick={closeMenu} to="/works" className="text-[#C0C4CC]/80 hover:text-white transition-colors">전체 작품</Link>
+                    <Link onClick={closeMenu} to="/platforms" className="text-[#C0C4CC]/80 hover:text-white transition-colors">플랫폼별 작품</Link>
+                  </div>
+                </div>
                 <Link onClick={closeMenu} to="/archive" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
                   <span className="text-xl">🗃️</span> Archive
+                </Link>
+                <Link onClick={closeMenu} to="/ooc" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
+                  <span className="text-xl">🎲</span> OOC Playground
                 </Link>
 
                 <div className="mt-8 pt-4 border-t border-white/10">
