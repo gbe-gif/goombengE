@@ -40,7 +40,7 @@ export default function PlatformsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {platformWorks.map(work => (
                   <div key={work.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-colors flex flex-col group">
-                     <Link to={`/post/${work.id}`} className="block relative aspect-[3/2] bg-black/40 overflow-hidden">
+                     <Link to={`/post/${work.id}`} className="block relative aspect-square bg-black/40 overflow-hidden">
                       {work.imageUrl ? (
                         <img src={work.imageUrl} alt={work.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
                       ) : (
