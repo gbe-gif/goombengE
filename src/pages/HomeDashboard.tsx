@@ -47,15 +47,19 @@ export default function HomeDashboard() {
     return content.filter(item => item.type === 'notice').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
   }, [content]);
 
+  const pinned = useMemo(() => {
+    return content.filter(item => item.isPinned).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 2);
+  }, [content]);
+
   const latest = useMemo(() => {
-    return [...content].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 6);
+    return content.filter(item => !item.isPinned).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 2);
   }, [content]);
 
   const updated = useMemo(() => {
-    return [...content]
-      .filter(item => item.updatedAt) // Only items that have been updated
+    return content
+      .filter(item => item.updatedAt && !item.isPinned) // Only items that have been updated
       .sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime())
-      .slice(0, 6);
+      .slice(0, 2);
   }, [content]);
 
   return (
@@ -76,6 +80,21 @@ export default function HomeDashboard() {
           {notices.length === 0 && <p className="text-[#C0C4CC]/50 p-6 text-center">등록된 공지사항이 없습니다.</p>}
         </div>
       </section>
+
+      {pinned.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+              <span className="text-3xl">⭐</span> Pinned
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {pinned.map(item => (
+              <PostItem key={item.id} item={item} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section>
         <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">

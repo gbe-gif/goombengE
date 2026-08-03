@@ -191,6 +191,20 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
           </div>
         </div>
 
+        <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
+          <input
+            type="checkbox"
+            id="isPinned"
+            name="isPinned"
+            checked={formData.isPinned || false}
+            onChange={(e) => setFormData(prev => ({ ...prev, isPinned: e.target.checked }))}
+            className="w-5 h-5 rounded border-white/20 bg-black/40 text-blue-500 focus:ring-blue-500 focus:ring-offset-gray-900 cursor-pointer"
+          />
+          <label htmlFor="isPinned" className="text-sm font-medium text-white cursor-pointer select-none">
+            ⭐ Home 최상단에 고정하기 (Pinned)
+          </label>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-white/60 mb-2">
             본문 내용 (Markdown 지원)

@@ -16,6 +16,7 @@ export interface ArchiveItem {
   version?: string; // For resources
   downloadUrl?: string; // For resources
   excerpt?: string; // Short preview
+  isPinned?: boolean; // For pinned items on Home
 }
 
 export const initialArchiveData: ArchiveItem[] = [
