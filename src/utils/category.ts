@@ -9,7 +9,6 @@ export const getCategoryLabel = (type: string) => {
     case 'image': return '🖼️ Image';
     case 'worldview': return '🌍 Worldview';
     case 'log': return '📝 Log';
-    case 'script': return '⚙️ Script';
     default: return type.toUpperCase();
   }
 };
