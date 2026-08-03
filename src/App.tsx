@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import HomeDashboard from './pages/HomeDashboard';
-import { NoticePage, LatestPage, UpdatedPage, ResourcesPage } from './pages/ListPages';
+import { NoticePage, ResourcesPage } from './pages/ListPages';
 import WorksPage from './pages/WorksPage';
 import PlatformsPage from './pages/PlatformsPage';
 import ArchivePage from './pages/ArchivePage';
@@ -17,8 +17,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomeDashboard />} />
           <Route path="/notice" element={<NoticePage />} />
-          <Route path="/latest" element={<LatestPage />} />
-          <Route path="/updated" element={<UpdatedPage />} />
           <Route path="/resources" element={<ResourcesPage />} />
           <Route path="/works" element={<WorksPage />} />
           <Route path="/platforms" element={<PlatformsPage />} />

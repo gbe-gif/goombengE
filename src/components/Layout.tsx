@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, Home, Search, Image as ImageIcon, FileText, Database, Package, Library, Server, Plus, LogOut, Settings } from 'lucide-react';
+import { Menu, X, Home, Search, Image as ImageIcon, FileText, Database, Package, Library, Server, Plus, LogOut, Settings, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../lib/firebase';
@@ -9,6 +9,8 @@ import { useAuth } from '../hooks/useAuth';
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isWorksOpen, setIsWorksOpen] = useState(false);
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -56,8 +58,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <div className="hidden md:flex items-center gap-4">
             <Link to="/notice" className="text-xl" title="Notice">📢</Link>
-            <Link to="/latest" className="text-xl" title="Latest">💡</Link>
-            <Link to="/updated" className="text-xl" title="Updated">🔥</Link>
             <Link to="/resources" className="text-xl" title="Resources">🎁</Link>
             <Link to="/works" className="text-xl" title="Works">📖</Link>
             <Link to="/archive" className="text-xl" title="Archive">🗃️</Link>
@@ -82,27 +82,59 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link onClick={closeMenu} to="/notice" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
                   <span className="text-xl">📢</span> Notice
                 </Link>
-                <Link onClick={closeMenu} to="/latest" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
-                  <span className="text-xl">💡</span> Latest
-                </Link>
-                <Link onClick={closeMenu} to="/updated" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
-                  <span className="text-xl">🔥</span> Updated
-                </Link>
                 <Link onClick={closeMenu} to="/resources" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
                   <span className="text-xl">🎁</span> Resources
                 </Link>
-                <div className="px-4 py-3">
-                  <div className="flex items-center gap-3 text-lg font-medium text-white mb-2">
-                    <span className="text-xl">📖</span> Works
-                  </div>
-                  <div className="pl-9 flex flex-col gap-2">
-                    <Link onClick={closeMenu} to="/works" className="text-[#C0C4CC]/80 hover:text-white transition-colors">전체 작품</Link>
-                    <Link onClick={closeMenu} to="/platforms" className="text-[#C0C4CC]/80 hover:text-white transition-colors">플랫폼별 작품</Link>
-                  </div>
+
+                <div className="px-4 py-3 flex flex-col">
+                  <button onClick={() => setIsWorksOpen(!isWorksOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">📖</span> Works
+                    </div>
+                    {isWorksOpen ? <ChevronUp size={20} className="text-white/50" /> : <ChevronDown size={20} className="text-white/50" />}
+                  </button>
+                  <AnimatePresence>
+                    {isWorksOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pl-9 flex flex-col gap-3 mt-4">
+                          <Link onClick={closeMenu} to="/works" className="text-[#C0C4CC]/80 hover:text-white transition-colors">전체 작품</Link>
+                          <Link onClick={closeMenu} to="/platforms" className="text-[#C0C4CC]/80 hover:text-white transition-colors">플랫폼별 작품</Link>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-                <Link onClick={closeMenu} to="/archive" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
-                  <span className="text-xl">🗃️</span> Archive
-                </Link>
+
+                <div className="px-4 py-3 flex flex-col">
+                  <button onClick={() => setIsArchiveOpen(!isArchiveOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🗃️</span> Archive
+                    </div>
+                    {isArchiveOpen ? <ChevronUp size={20} className="text-white/50" /> : <ChevronDown size={20} className="text-white/50" />}
+                  </button>
+                  <AnimatePresence>
+                    {isArchiveOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pl-9 flex flex-col gap-3 mt-4">
+                          <Link onClick={closeMenu} to="/archive/image" className="text-[#C0C4CC]/80 hover:text-white transition-colors flex items-center gap-2">🖼 Image Archive</Link>
+                          <Link onClick={closeMenu} to="/archive/worldview" className="text-[#C0C4CC]/80 hover:text-white transition-colors flex items-center gap-2">🌍 Worldview</Link>
+                          <Link onClick={closeMenu} to="/archive/log" className="text-[#C0C4CC]/80 hover:text-white transition-colors flex items-center gap-2">📋 Test Logs</Link>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
                 <Link onClick={closeMenu} to="/ooc" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
                   <span className="text-xl">🎲</span> OOC Playground
                 </Link>

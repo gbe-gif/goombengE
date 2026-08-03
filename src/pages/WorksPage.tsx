@@ -8,10 +8,9 @@ import clsx from 'clsx';
 export default function WorksPage() {
   const { content } = useContent();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [platformFilter, setPlatformFilter] = useState<string>('all');
-  const [genreFilter, setGenreFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-
+  const selectedPlatform = searchParams.get('platform') || 'all';
+  const selectedGenre = searchParams.get('genre') || 'all';
+  const selectedStatus = searchParams.get('status') || 'all';
   const selectedTag = searchParams.get('tag');
 
   const works = useMemo(() => {
@@ -24,13 +23,13 @@ export default function WorksPage() {
 
   const filteredWorks = useMemo(() => {
     return works.filter(work => {
-      const matchPlatform = platformFilter === 'all' || work.platform === platformFilter;
-      const matchGenre = genreFilter === 'all' || work.genre === genreFilter;
-      const matchStatus = statusFilter === 'all' || work.status === statusFilter;
+      const matchPlatform = selectedPlatform === 'all' || work.platform === selectedPlatform;
+      const matchGenre = selectedGenre === 'all' || work.genre === selectedGenre;
+      const matchStatus = selectedStatus === 'all' || work.status === selectedStatus;
       const matchTag = !selectedTag || (work.tags && work.tags.includes(selectedTag));
       return matchPlatform && matchGenre && matchStatus && matchTag;
     });
-  }, [works, platformFilter, genreFilter, statusFilter, selectedTag]);
+  }, [works, selectedPlatform, selectedGenre, selectedStatus, selectedTag]);
 
   const handleClearTag = () => {
     searchParams.delete('tag');
@@ -40,7 +39,34 @@ export default function WorksPage() {
   const handleTagClick = (tag: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSearchParams({ tag });
+    setSearchParams(prev => {
+      prev.set('tag', tag);
+      return prev;
+    });
+  };
+
+  const setPlatformFilter = (val: string) => {
+    setSearchParams(prev => {
+      if (val === 'all') prev.delete('platform');
+      else prev.set('platform', val);
+      return prev;
+    });
+  };
+
+  const setGenreFilter = (val: string) => {
+    setSearchParams(prev => {
+      if (val === 'all') prev.delete('genre');
+      else prev.set('genre', val);
+      return prev;
+    });
+  };
+
+  const setStatusFilter = (val: string) => {
+    setSearchParams(prev => {
+      if (val === 'all') prev.delete('status');
+      else prev.set('status', val);
+      return prev;
+    });
   };
 
   return (
@@ -75,7 +101,7 @@ export default function WorksPage() {
         <>
           <div className="flex flex-wrap gap-4 mb-8 bg-white/5 p-4 rounded-2xl border border-white/10">
             <select
-              value={platformFilter}
+              value={selectedPlatform}
               onChange={(e) => setPlatformFilter(e.target.value)}
               className="bg-[#12182B] border border-white/10 text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500/50 transition-colors"
             >
@@ -83,7 +109,7 @@ export default function WorksPage() {
               {platforms.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
             <select
-              value={genreFilter}
+              value={selectedGenre}
               onChange={(e) => setGenreFilter(e.target.value)}
               className="bg-[#12182B] border border-white/10 text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500/50 transition-colors"
             >
@@ -91,7 +117,7 @@ export default function WorksPage() {
               {genres.map(g => <option key={g} value={g}>{g}</option>)}
             </select>
             <select
-              value={statusFilter}
+              value={selectedStatus}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="bg-[#12182B] border border-white/10 text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500/50 transition-colors"
             >

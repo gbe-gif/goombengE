@@ -100,11 +100,8 @@ export default function HomeDashboard() {
       <section>
         <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
           <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <span className="text-3xl">💡</span> 최신 글
+            <span className="text-3xl">💡</span> Latest
           </h2>
-          <Link to="/latest" className="text-sm font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors">
-            더보기 <ChevronRight size={16} />
-          </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {latest.map(item => (
@@ -116,11 +113,8 @@ export default function HomeDashboard() {
       <section>
         <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
           <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <span className="text-3xl">🔥</span> 최근 수정된 글
+            <span className="text-3xl">🔥</span> Updated
           </h2>
-          <Link to="/updated" className="text-sm font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors">
-            더보기 <ChevronRight size={16} />
-          </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {updated.map(item => (
