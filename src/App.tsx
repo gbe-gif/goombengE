@@ -9,6 +9,7 @@ import ArchiveCategoryPage from './pages/ArchiveCategoryPage';
 import PostDetail from './pages/PostDetail';
 import AdminDashboard from './admin/AdminDashboard';
 import OOCPage from './pages/OOCPage';
+import DevNotesPage from './pages/DevNotesPage';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/archive/:category" element={<ArchiveCategoryPage />} />
           <Route path="/ooc" element={<OOCPage />} />
+          <Route path="/dev-notes" element={<DevNotesPage />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>

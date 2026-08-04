@@ -2,7 +2,7 @@ export interface ArchiveItem {
   id: string;
   code?: string;
   name: string; // Title
-  type: 'image' | 'worldview' | 'log' | 'notice' | 'resource' | 'work' | 'ooc';
+  type: 'image' | 'worldview' | 'log' | 'notice' | 'resource' | 'work' | 'ooc' | 'devnote';
   imageUrl?: string;
   link?: string;
   date: string; // Created At

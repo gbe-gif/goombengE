@@ -140,34 +140,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Link>
 
                 <div className="mt-8 pt-4 border-t border-white/10">
-                  <div className="px-4 py-2 text-xs font-mono text-[#C0C4CC]/50 mb-2">ADMINISTRATION</div>
+                  <Link onClick={closeMenu} to="/dev-notes" className="flex items-center gap-3 px-4 py-2 rounded-xl text-white/50 hover:text-white hover:bg-white/5 text-sm font-medium transition-colors">
+                    <span className="text-base grayscale opacity-70">📓</span> Dev Notes
+                  </Link>
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="px-4 py-1 text-[10px] font-medium text-[#C0C4CC]/40 mb-1">관계자 전용</div>
                   {isAdmin ? (
-                    <>
+                    <div className="flex items-center gap-4 px-4">
                       <Link 
                         onClick={closeMenu}
                         to="/admin"
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-lg font-medium transition-colors"
+                        className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
                       >
-                        <Settings size={20} />
                         관리자 대시보드
                       </Link>
                       <button 
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-400 text-lg font-medium transition-colors"
+                        className="text-xs text-red-400/80 hover:text-red-400 transition-colors"
                       >
-                        <LogOut size={20} />
                         로그아웃
                       </button>
-                    </>
+                    </div>
                   ) : (
-                    <button 
-                      onClick={handleGoogleLogin}
-                      disabled={isLoggingIn}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-white/40 hover:text-white text-lg font-medium transition-colors disabled:opacity-50"
-                    >
-                      <LogOut size={20} />
-                      {isLoggingIn ? '로딩중...' : 'Google 로그인'}
-                    </button>
+                    <div className="px-4">
+                      <button 
+                        onClick={handleGoogleLogin}
+                        disabled={isLoggingIn}
+                        className="text-xs text-[#C0C4CC]/50 hover:text-[#C0C4CC]/80 transition-colors disabled:opacity-50 inline-flex items-center"
+                      >
+                        {isLoggingIn ? '로딩중...' : 'Google Login →'}
+                      </button>
+                    </div>
                   )}
                 </div>
               </nav>

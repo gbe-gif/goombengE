@@ -5,6 +5,7 @@ export const getCategoryLabel = (type: string) => {
     case 'work': return '📖 Works';
     case 'archive': return '🗃️ Archive';
     case 'ooc': return '🎲 OOC Playground';
+    case 'devnote': return '📓 Dev Notes';
     // For other archive types if needed:
     case 'image': return '🖼️ Image';
     case 'worldview': return '🌍 Worldview';
