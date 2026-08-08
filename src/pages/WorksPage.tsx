@@ -17,13 +17,14 @@ export default function WorksPage() {
     return content.filter(item => item.type === 'work').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [content]);
 
-  const platforms = useMemo(() => Array.from(new Set(works.map(w => w.platform).filter(Boolean))), [works]);
+  const platforms = useMemo(() => Array.from(new Set(works.flatMap(w => w.platform ? w.platform.split(',').map(s => s.trim()) : []).filter(Boolean))), [works]);
   const genres = useMemo(() => Array.from(new Set(works.map(w => w.genre).filter(Boolean))), [works]);
   const statuses = useMemo(() => Array.from(new Set(works.map(w => w.status).filter(Boolean))), [works]);
 
-  const filteredWorks = useMemo(() => {
+  const filteredStories = useMemo(() => {
     return works.filter(work => {
-      const matchPlatform = selectedPlatform === 'all' || work.platform === selectedPlatform;
+      const workPlatforms = work.platform ? work.platform.split(',').map(s => s.trim()) : [];
+      const matchPlatform = selectedPlatform === 'all' || workPlatforms.includes(selectedPlatform);
       const matchGenre = selectedGenre === 'all' || work.genre === selectedGenre;
       const matchStatus = selectedStatus === 'all' || work.status === selectedStatus;
       const matchTag = !selectedTag || (work.tags && work.tags.includes(selectedTag));
@@ -75,11 +76,11 @@ export default function WorksPage() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <span className="text-4xl">📖</span>
-            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Works</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Stories</h1>
           </div>
           <div className="flex gap-4">
-            <Link to="/works" className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">전체 작품</Link>
-            <Link to="/platforms" className="text-[#C0C4CC]/60 hover:text-white pb-1 transition-colors">플랫폼별 작품</Link>
+            <Link to="/works" className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">전체 스토리</Link>
+            <Link to="/platforms" className="text-[#C0C4CC]/60 hover:text-white pb-1 transition-colors">플랫폼별 스토리</Link>
           </div>
         </div>
         {selectedTag && (
@@ -96,7 +97,7 @@ export default function WorksPage() {
       </div>
 
       {works.length === 0 ? (
-        <p className="text-center py-12 text-[#C0C4CC]/50">등록된 작품이 없습니다.</p>
+        <p className="text-center py-12 text-[#C0C4CC]/50">등록된 스토리가 없습니다.</p>
       ) : (
         <>
           <div className="flex flex-wrap gap-4 mb-8 bg-white/5 p-4 rounded-2xl border border-white/10">
@@ -127,7 +128,7 @@ export default function WorksPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredWorks.map(work => (
+            {filteredStories.map(work => (
               <div key={work.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-colors group flex flex-col">
                 <Link to={`/post/${work.id}`} className="block relative aspect-square bg-black/40 overflow-hidden">
                   {work.imageUrl ? (
@@ -171,7 +172,7 @@ export default function WorksPage() {
                 </div>
               </div>
             ))}
-            {filteredWorks.length === 0 && <p className="col-span-full text-center py-12 text-[#C0C4CC]/50">조건에 맞는 작품이 없습니다.</p>}
+            {filteredStories.length === 0 && <p className="col-span-full text-center py-12 text-[#C0C4CC]/50">조건에 맞는 스토리가 없습니다.</p>}
           </div>
         </>
       )}

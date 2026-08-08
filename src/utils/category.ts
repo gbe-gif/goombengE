@@ -2,7 +2,7 @@ export const getCategoryLabel = (type: string) => {
   switch (type) {
     case 'notice': return '📢 Notice';
     case 'resource': return '🎁 Resources';
-    case 'work': return '📖 Works';
+    case 'work': return '📖 Stories';
     case 'archive': return '🗃️ Archive';
     case 'ooc': return '🎲 OOC Playground';
     case 'devnote': return '📓 Dev Notes';

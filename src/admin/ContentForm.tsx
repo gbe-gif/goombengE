@@ -82,7 +82,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
               className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 appearance-none"
             >
               <option value="notice" className="bg-[#12182B]">공지사항 (Notice)</option>
-              <option value="work" className="bg-[#12182B]">작품 (Work)</option>
+              <option value="work" className="bg-[#12182B]">스토리 (Work)</option>
               <option value="resource" className="bg-[#12182B]">배포 자료 (Resource)</option>
               <option value="ooc" className="bg-[#12182B]">OOC Playground (OOC)</option>
               <option value="devnote" className="bg-[#12182B]">Dev Notes (개발 노트)</option>

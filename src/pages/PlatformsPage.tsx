@@ -13,9 +13,11 @@ export default function PlatformsPage() {
   const worksByPlatform = useMemo(() => {
     const map = new Map<string, typeof works>();
     works.forEach(work => {
-      const platform = work.platform || '기타';
-      if (!map.has(platform)) map.set(platform, []);
-      map.get(platform)!.push(work);
+      const platforms = work.platform ? work.platform.split(',').map(s => s.trim()).filter(Boolean) : ['기타'];
+      platforms.forEach(platform => {
+        if (!map.has(platform)) map.set(platform, []);
+        map.get(platform)!.push(work);
+      });
     });
     return map;
   }, [works]);
@@ -26,17 +28,17 @@ export default function PlatformsPage() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <span className="text-4xl">📖</span>
-            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Works</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Stories</h1>
           </div>
           <div className="flex gap-4">
-            <Link to="/works" className="text-[#C0C4CC]/60 hover:text-white pb-1 transition-colors">전체 작품</Link>
-            <Link to="/platforms" className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">플랫폼별 작품</Link>
+            <Link to="/works" className="text-[#C0C4CC]/60 hover:text-white pb-1 transition-colors">전체 스토리</Link>
+            <Link to="/platforms" className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">플랫폼별 스토리</Link>
           </div>
         </div>
       </div>
 
       {worksByPlatform.size === 0 ? (
-        <p className="text-center py-12 text-[#C0C4CC]/50">등록된 작품이 없습니다.</p>
+        <p className="text-center py-12 text-[#C0C4CC]/50">등록된 스토리가 없습니다.</p>
       ) : (
         <div className="space-y-16">
           {Array.from(worksByPlatform.entries()).map(([platform, platformWorks]) => (

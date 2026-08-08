@@ -5,11 +5,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../lib/firebase';
 import { signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useAuth } from '../hooks/useAuth';
+import SearchBar from './SearchBar';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [isWorksOpen, setIsWorksOpen] = useState(false);
+  const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-[#0B1021] text-[#C0C4CC] font-sans selection:bg-blue-500/30">
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0B1021]/90 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-1">
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 -ml-2 text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50"
@@ -52,14 +53,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
               {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
-            <Link to="/" onClick={closeMenu} className="text-xl font-bold text-white tracking-tight hover:text-blue-400 transition-colors">
+            <Link to="/" onClick={closeMenu} className="text-xl font-bold text-white tracking-tight hover:text-blue-400 transition-colors whitespace-nowrap">
               게으른굼벵이의 창고
             </Link>
+            <div className="hidden sm:block flex-1 max-w-sm ml-4">
+              <SearchBar />
+            </div>
           </div>
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4 shrink-0">
             <Link to="/notice" className="text-xl" title="Notice">📢</Link>
             <Link to="/resources" className="text-xl" title="Resources">🎁</Link>
-            <Link to="/works" className="text-xl" title="Works">📖</Link>
+            <Link to="/works" className="text-xl" title="Stories">📖</Link>
             <Link to="/archive" className="text-xl" title="Archive">🗃️</Link>
             <Link to="/ooc" className="text-xl" title="OOC Playground">🎲</Link>
           </div>
@@ -75,6 +79,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               className="absolute top-16 left-0 right-0 overflow-hidden bg-[#0B1021] border-b border-white/10 shadow-2xl h-[calc(100vh-4rem)] md:h-auto overflow-y-auto"
             >
               <nav className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-2">
+                <div className="px-4 py-2 sm:hidden -ml-4">
+                  <SearchBar onSelect={closeMenu} />
+                </div>
                 <Link onClick={closeMenu} to="/" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-lg font-medium text-white transition-colors">
                   <Home className="text-blue-400" size={20} />
                   Home
@@ -87,14 +94,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Link>
 
                 <div className="px-4 py-3 flex flex-col">
-                  <button onClick={() => setIsWorksOpen(!isWorksOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
+                  <button onClick={() => setIsStoriesOpen(!isStoriesOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl">📖</span> Works
+                      <span className="text-xl">📖</span> Stories
                     </div>
-                    {isWorksOpen ? <ChevronUp size={20} className="text-white/50" /> : <ChevronDown size={20} className="text-white/50" />}
+                    {isStoriesOpen ? <ChevronUp size={20} className="text-white/50" /> : <ChevronDown size={20} className="text-white/50" />}
                   </button>
                   <AnimatePresence>
-                    {isWorksOpen && (
+                    {isStoriesOpen && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
@@ -102,8 +109,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         className="overflow-hidden"
                       >
                         <div className="pl-9 flex flex-col gap-3 mt-4">
-                          <Link onClick={closeMenu} to="/works" className="text-[#C0C4CC]/80 hover:text-white transition-colors">전체 작품</Link>
-                          <Link onClick={closeMenu} to="/platforms" className="text-[#C0C4CC]/80 hover:text-white transition-colors">플랫폼별 작품</Link>
+                          <Link onClick={closeMenu} to="/works" className="text-[#C0C4CC]/80 hover:text-white transition-colors">전체 스토리</Link>
+                          <Link onClick={closeMenu} to="/platforms" className="text-[#C0C4CC]/80 hover:text-white transition-colors">플랫폼별 스토리</Link>
                         </div>
                       </motion.div>
                     )}
