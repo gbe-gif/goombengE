@@ -17,6 +17,7 @@ export default function DevNotesPage() {
       icon="📓" 
       items={notesItems} 
       emptyMessage="등록된 개발 노트가 없습니다."
+      categoryId="devnote"
     />
   );
 }

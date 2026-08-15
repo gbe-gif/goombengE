@@ -13,8 +13,15 @@ function PostItem({ item }: { item: ArchiveItem }) {
       className="flex p-5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all shadow-lg shadow-black/20 gap-4 group"
     >
       <div className="flex-1 min-w-0 flex flex-col">
-        <div className="flex items-center mb-2">
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
           <span className="text-[10px] px-2 py-0.5 bg-black/40 rounded-md text-[#C0C4CC]/80 uppercase">{getCategoryLabel(item.type)}</span>
+          {item.type === 'work' && item.platform && (
+            item.platform.split(',').map(p => (
+              <span key={p.trim()} className="text-[10px] px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded-md uppercase border border-blue-500/30">
+                {p.trim()}
+              </span>
+            ))
+          )}
         </div>
         <h3 className="text-base sm:text-lg font-medium text-white mb-1 line-clamp-1 group-hover:text-blue-300 transition-colors">{item.name}</h3>
         <span className="text-xs text-[#C0C4CC]/60 font-mono mb-2">{formatKST(item.updatedAt || item.date)}</span>

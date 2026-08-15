@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 import { useContent } from '../hooks/useContent';
+import { useSettings } from '../hooks/useSettings';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 
 export default function PlatformsPage() {
   const { content } = useContent();
+  const { memos } = useSettings();
 
   const works = useMemo(() => {
     return content.filter(item => item.type === 'work').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -13,10 +15,12 @@ export default function PlatformsPage() {
   const worksByPlatform = useMemo(() => {
     const map = new Map<string, typeof works>();
     works.forEach(work => {
-      const platforms = work.platform ? work.platform.split(',').map(s => s.trim()).filter(Boolean) : ['기타'];
+      const platforms = work.platform ? work.platform.split(',').map(s => s.trim().split(' ')[0]).filter(Boolean) : ['기타'];
       platforms.forEach(platform => {
         if (!map.has(platform)) map.set(platform, []);
-        map.get(platform)!.push(work);
+        if (!map.get(platform)!.find(w => w.id === work.id)) {
+          map.get(platform)!.push(work);
+        }
       });
     });
     return map;
@@ -24,7 +28,7 @@ export default function PlatformsPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/10 pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 border-b border-white/10 pb-6">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <span className="text-4xl">📖</span>
@@ -37,6 +41,11 @@ export default function PlatformsPage() {
         </div>
       </div>
 
+      {memos['platforms'] && (
+        <div className="mb-10 bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
+          {memos['platforms']}
+        </div>
+      )}
       {worksByPlatform.size === 0 ? (
         <p className="text-center py-12 text-[#C0C4CC]/50">등록된 스토리가 없습니다.</p>
       ) : (

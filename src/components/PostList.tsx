@@ -1,6 +1,7 @@
 import { ArchiveItem } from '../data/mockData';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useSettings } from '../hooks/useSettings';
 import clsx from 'clsx';
 import { EyeOff } from 'lucide-react';
 import { formatKST } from '../lib/formatDate';
@@ -11,10 +12,12 @@ interface PostListProps {
   icon: string;
   items: ArchiveItem[];
   emptyMessage?: string;
+  categoryId?: string;
 }
 
-export default function PostList({ title, icon, items, emptyMessage = "등록된 글이 없습니다." }: PostListProps) {
+export default function PostList({ title, icon, items, emptyMessage = "등록된 글이 없습니다.", categoryId }: PostListProps) {
   const { isAdmin } = useAuth();
+  const { memos } = useSettings();
   
   return (
     <div className="max-w-4xl mx-auto">
@@ -23,6 +26,11 @@ export default function PostList({ title, icon, items, emptyMessage = "등록된
         <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{title}</h1>
       </div>
 
+      {categoryId && memos[categoryId] && (
+        <div className="mb-10 bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
+          {memos[categoryId]}
+        </div>
+      )}
       <div className="space-y-4">
         {items.length === 0 ? (
           <p className="text-center py-12 text-[#C0C4CC]/50">{emptyMessage}</p>

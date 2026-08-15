@@ -10,6 +10,8 @@ import { Navigate } from 'react-router-dom';
 import { formatKST } from '../lib/formatDate';
 import { getCategoryLabel } from '../utils/category';
 
+import MemoSettings from './MemoSettings';
+
 export default function AdminDashboard() {
   const { content, loading: contentLoading } = useContent();
   const { isAdmin, loading: authLoading } = useAuth();
@@ -188,6 +190,7 @@ export default function AdminDashboard() {
           </tbody>
         </table>
       </div>
+      <MemoSettings />
     </div>
   );
 }

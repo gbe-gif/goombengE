@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useContent } from '../hooks/useContent';
+import { useSettings } from '../hooks/useSettings';
 import { ArchiveItem } from '../data/mockData';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ExternalLink, Hash, X } from 'lucide-react';
@@ -7,6 +8,7 @@ import clsx from 'clsx';
 
 export default function WorksPage() {
   const { content } = useContent();
+  const { memos } = useSettings();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedPlatform = searchParams.get('platform') || 'all';
   const selectedGenre = searchParams.get('genre') || 'all';
@@ -17,13 +19,13 @@ export default function WorksPage() {
     return content.filter(item => item.type === 'work').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [content]);
 
-  const platforms = useMemo(() => Array.from(new Set(works.flatMap(w => w.platform ? w.platform.split(',').map(s => s.trim()) : []).filter(Boolean))), [works]);
+  const platforms = useMemo(() => Array.from(new Set(works.flatMap(w => w.platform ? w.platform.split(',').map(s => s.trim().split(' ')[0]) : []).filter(Boolean))), [works]);
   const genres = useMemo(() => Array.from(new Set(works.map(w => w.genre).filter(Boolean))), [works]);
   const statuses = useMemo(() => Array.from(new Set(works.map(w => w.status).filter(Boolean))), [works]);
 
   const filteredStories = useMemo(() => {
     return works.filter(work => {
-      const workPlatforms = work.platform ? work.platform.split(',').map(s => s.trim()) : [];
+      const workPlatforms = work.platform ? work.platform.split(',').map(s => s.trim().split(' ')[0]) : [];
       const matchPlatform = selectedPlatform === 'all' || workPlatforms.includes(selectedPlatform);
       const matchGenre = selectedGenre === 'all' || work.genre === selectedGenre;
       const matchStatus = selectedStatus === 'all' || work.status === selectedStatus;
@@ -72,7 +74,7 @@ export default function WorksPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/10 pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 border-b border-white/10 pb-6">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <span className="text-4xl">📖</span>
@@ -83,6 +85,13 @@ export default function WorksPage() {
             <Link to="/platforms" className="text-[#C0C4CC]/60 hover:text-white pb-1 transition-colors">플랫폼별 스토리</Link>
           </div>
         </div>
+      </div>
+      {memos['work'] && (
+        <div className="mb-10 bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
+          {memos['work']}
+        </div>
+      )}
+      <div>
         {selectedTag && (
           <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full">
             <span className="text-blue-400 font-medium flex items-center">

@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useContent } from '../hooks/useContent';
+import { useSettings } from '../hooks/useSettings';
 import { ArchiveItem } from '../data/mockData';
 import { useMemo } from 'react';
 import { Image as ImageIcon, FileText, Database, ArrowLeft } from 'lucide-react';
@@ -7,6 +8,7 @@ import { Image as ImageIcon, FileText, Database, ArrowLeft } from 'lucide-react'
 export default function ArchiveCategoryPage() {
   const { category } = useParams<{ category: string }>();
   const { content } = useContent();
+  const { memos } = useSettings();
 
   const { title, icon, items, type } = useMemo(() => {
     let t = '';
@@ -43,6 +45,11 @@ export default function ArchiveCategoryPage() {
         {icon}
         <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{title}</h1>
       </div>
+      {type && memos[type] && (
+        <div className="mb-10 bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
+          {memos[type]}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
         {items.map(item => (

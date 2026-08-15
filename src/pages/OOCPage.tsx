@@ -17,6 +17,7 @@ export default function OOCPage() {
       icon="🎲" 
       items={oocItems} 
       emptyMessage="등록된 OOC 글이 없습니다."
+      categoryId="ooc"
     />
   );
 }
