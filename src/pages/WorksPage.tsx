@@ -86,11 +86,9 @@ export default function WorksPage() {
           </div>
         </div>
       </div>
-      {memos['work'] && (
-        <div className="mb-10 bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
-          {memos['work']}
-        </div>
-      )}
+      <div className="mb-10 min-h-[3.5rem] bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
+        {memos['work'] || '\u00A0'}
+      </div>
       <div>
         {selectedTag && (
           <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full">

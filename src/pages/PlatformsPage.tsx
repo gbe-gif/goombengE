@@ -41,11 +41,10 @@ export default function PlatformsPage() {
         </div>
       </div>
 
-      {memos['platforms'] && (
-        <div className="mb-10 bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
-          {memos['platforms']}
-        </div>
-      )}
+      <div className="mb-10 min-h-[3.5rem] bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
+        {memos['platforms'] || '\u00A0'}
+      </div>
+
       {worksByPlatform.size === 0 ? (
         <p className="text-center py-12 text-[#C0C4CC]/50">등록된 스토리가 없습니다.</p>
       ) : (
