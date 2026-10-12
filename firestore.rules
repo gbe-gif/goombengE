@@ -7,7 +7,7 @@ service cloud.firestore {
     }
 
     match /content/{document} {
-      allow read: if true;
+      allow read: if isAdmin() || resource.data.isVisible == true;
       allow create: if isAdmin();
       allow update: if isAdmin();
       allow delete: if isAdmin();

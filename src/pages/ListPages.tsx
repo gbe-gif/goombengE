@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 export function NoticePage() {
   const { content } = useContent();
   const items = useMemo(() => content.filter(item => item.type === 'notice').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()), [content]);
-  return <PostList title="Notice" icon="📢" items={items} emptyMessage="등록된 공지사항이 없습니다." categoryId="notice" />;
+  return <PostList title="공지" icon="📢" items={items} emptyMessage="등록된 공지사항이 없습니다." categoryId="notice" />;
 }
 
 export function ResourcesPage() {

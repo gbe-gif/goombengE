@@ -42,7 +42,8 @@ export default function SearchBar({ onSelect }: { onSelect?: () => void }) {
         <Search className="absolute left-3 text-[#C0C4CC]/50" size={18} />
         <input
           type="text"
-          placeholder="검색..."
+          aria-label="글 검색"
+          placeholder="제목이나 내용 검색"
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -52,7 +53,7 @@ export default function SearchBar({ onSelect }: { onSelect?: () => void }) {
           className="w-full bg-white/5 border border-white/10 rounded-full py-1.5 pl-10 pr-10 text-sm text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 transition-colors"
         />
         {query && (
-          <button
+          <button aria-label="검색어 지우기"
             onClick={() => {
               setQuery('');
               setIsOpen(false);

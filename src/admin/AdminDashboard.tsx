@@ -3,7 +3,7 @@ import { useContent } from '../hooks/useContent';
 import { useAuth } from '../hooks/useAuth';
 import { Plus, Edit2, Trash2, Eye, EyeOff, Link as LinkIcon, Loader2 } from 'lucide-react';
 import { db } from '../lib/firebase';
-import { deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { ArchiveItem } from '../data/mockData';
 import ContentForm from './ContentForm';
 import { Navigate } from 'react-router-dom';
@@ -13,8 +13,10 @@ import { getCategoryLabel } from '../utils/category';
 import MemoSettings from './MemoSettings';
 
 export default function AdminDashboard() {
-  const { content, loading: contentLoading } = useContent();
+  const { content, loading: contentLoading, error: contentError } = useContent();
   const { isAdmin, loading: authLoading } = useAuth();
+  const [pending, setPending] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState('');
   const [editingItem, setEditingItem] = useState<ArchiveItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [quickUrl, setQuickUrl] = useState('');
@@ -32,13 +34,25 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleToggleVisible = async (item: ArchiveItem) => {
-    await setDoc(doc(db, 'content', item.id), { ...item, isVisible: item.isVisible === false ? true : false });
+  const updateFlags = async (item: ArchiveItem, flags: Partial<ArchiveItem>, message: string) => {
+    if (pending) return;
+    setPending(item.id);
+    setFeedback('');
+    try {
+      await updateDoc(doc(db, 'content', item.id), flags);
+      setFeedback(message);
+    } catch (error) {
+      console.error(error);
+      setFeedback('저장하지 못했습니다. 관리자 로그인과 Firebase 권한을 확인해 주세요.');
+    } finally {
+      setPending(null);
+    }
   };
-
-  const handleTogglePinned = async (item: ArchiveItem) => {
-    await setDoc(doc(db, 'content', item.id), { ...item, isPinned: !item.isPinned });
+  const handleToggleVisible = (item: ArchiveItem) => {
+    const visible = item.isVisible !== true;
+    return updateFlags(item, { isVisible: visible }, visible ? '공개로 변경했습니다.' : '비공개로 변경했습니다. 방문자에게는 표시되지 않습니다.');
   };
+  const handleTogglePinned = (item: ArchiveItem) => updateFlags(item, { isPinned: !item.isPinned }, item.isPinned ? '홈 고정을 해제했습니다.' : '홈에 고정했습니다.');
 
   const handleQuickAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +107,10 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
+      <p className="text-sm text-slate-300">관리자는 비공개 글도 볼 수 있습니다. 방문자에게는 공개 상태인 글만 표시됩니다.</p>
+      {contentError && <p role="alert" className="text-amber-300">{contentError}</p>}
+      {feedback && <p role="status" className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm">{feedback}</p>}
+      {content.some(item => item.isVisible === undefined) && <p className="text-amber-300 text-sm">공개 상태가 없는 이전 글은 방문자에게 숨겨집니다. 공개하려는 글의 상태 버튼을 눌러 주세요.</p>}
       <div className="bg-[#12182B] border border-white/10 rounded-xl p-6 shadow-lg shadow-black/20">
         <h3 className="text-lg font-medium text-white mb-4">빠른 이미지 추가</h3>
         <form onSubmit={handleQuickAdd} className="flex gap-4 items-center">
@@ -155,6 +173,7 @@ export default function AdminDashboard() {
                 <td className="px-6 py-4 text-white/60 font-mono text-xs">{item.updatedAt ? formatKST(item.updatedAt) : '-'}</td>
                 <td className="px-6 py-4 flex items-center gap-2">
                   <button 
+                    disabled={pending !== null}
                     onClick={() => handleTogglePinned(item)}
                     className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${item.isPinned ? 'bg-yellow-500/20 text-yellow-400' : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/80'}`}
                     title="Home 고정 토글"
@@ -162,11 +181,13 @@ export default function AdminDashboard() {
                     <span className={item.isPinned ? 'opacity-100' : 'opacity-50 grayscale'}>⭐</span>
                   </button>
                   <button 
+                    disabled={pending !== null}
+                    aria-label={`${item.name} ${item.isVisible === true ? '비공개로' : '공개로'} 변경`}
                     onClick={() => handleToggleVisible(item)}
-                    className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${item.isVisible !== false ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}
+                    className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${item.isVisible === true ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}
                   >
-                    {item.isVisible !== false ? <Eye size={14} /> : <EyeOff size={14} />}
-                    {item.isVisible !== false ? '공개' : '비공개'}
+                    {item.isVisible === true ? <Eye size={14} /> : <EyeOff size={14} />}
+                    {item.isVisible === true ? '공개' : '비공개'}
                   </button>
                 </td>
                 <td className="px-6 py-4 text-right">

@@ -1,0 +1,53 @@
+# 홈페이지 리뉴얼
+
+기존 React / Vite / Firebase 구성을 유지합니다. Firebase 프로젝트와 데이터베이스를 바꾸지 않습니다.
+
+## 주요 변경
+
+- 홈에 설명이 있는 카테고리 바로가기와 작품·이미지 미리보기를 배치했습니다.
+- 주요 메뉴에 이름을 표시하고, 작은 화면에는 메뉴와 검색을 제공합니다.
+- 목록 썸네일은 2:3 비율과 object-contain을 사용해 전체가 보입니다.
+- 이미지가 없거나 로딩에 실패한 경우 https://gbe88.uk/zzz/b1.webp 를 표시합니다.
+- 작품의 외부 사이트 버튼은 목록과 상세 화면 상단에 있습니다.
+- 방문자는 isVisible: true인 글만 읽습니다. 홈, 검색, 작품, 아카이브, 직접 상세 주소 모두 같은 정책을 사용합니다.
+- 관리자는 비공개 글을 볼 수 있으며 별도 안내가 표시됩니다. 상태 변경 중 버튼을 비활성화하고 실패 및 성공을 알립니다.
+- 데이터가 비어 있거나 오류가 나도 예시 글을 자동으로 저장하거나 표시하지 않습니다.
+
+## 실행
+
+```sh
+npm ci
+npm run dev
+npm run build
+npm run test:visibility
+```
+
+배포용 파일은 dist/에 생성됩니다. 운영 사이트는 https://goombeng-e.vercel.app/ 이며 Vercel에서 배포하고 Firebase를 데이터베이스 및 로그인에 사용합니다. 기존 Vercel GitHub 연결과 빌드 설정을 유지하세요. PR에 표시되는 Vercel 미리보기에서 확인한 뒤 main에 병합해 반영할 수 있습니다.
+
+## Firebase 비공개 규칙 적용
+
+화면의 비공개 처리와 서버 규칙은 함께 적용해야 합니다. firestore.rules를 GitHub에 저장하는 것만으로는 Firebase의 실제 규칙이 바뀌지 않습니다.
+
+1. 기존 공개 사이트를 업데이트하기 전에 공개 상태가 없는 글이 있는지 확인합니다. 이전에는 상태가 없는 글도 공개로 간주했지만, 이제는 명시적으로 isVisible: true인 글만 방문자에게 표시합니다. 관리자에서 공개할 글만 공개로 바꿉니다.
+2. Vercel 미리보기에서 확인한 뒤 변경 브랜치를 main으로 병합해 기존 Vercel 프로젝트로 배포합니다.
+3. Firebase 콘솔에서 프로젝트 gen-lang-client-0458258462의 Firestore **데이터베이스 ai-studio-midnightarchive-65fa205c-f149-4ec0-94e4-638437b07ce5**를 선택하고 firestore.rules 내용을 게시합니다.
+   또는 Firebase CLI 인증 후 다음 명령을 사용합니다. firebase.json에는 실제로 사용하는 이름 있는 데이터베이스가 지정되어 있습니다.
+
+```sh
+firebase deploy --only firestore:rules --project gen-lang-client-0458258462
+```
+
+먼저 프런트엔드를 업데이트하고 규칙을 적용하세요. 이전 프런트엔드는 모든 글을 조회하므로 강화한 규칙을 먼저 적용하면 조회가 거절됩니다.
+
+## 배포 후 확인
+
+- 관리자에서 글을 비공개로 바꾸고 성공 안내를 확인합니다.
+- 로그아웃한 브라우저에서 홈, 검색, 작품, 아카이브, 상세 주소에 해당 글이 나타나지 않는지 확인합니다.
+- 관리자 재로그인 시 비공개 글과 상태 표시가 보이는지 확인합니다.
+- Firebase Rules Playground에서 방문자의 비공개 문서 읽기와 전체 content 조회가 거절되는지 확인합니다.
+- 썸네일이 있는 글, 없는 글, 이미지 주소가 깨진 글을 확인합니다.
+- 작품 사이트 버튼이 새 탭으로 열리는지 확인합니다.
+
+Firebase 조회와 규칙의 관계: https://firebase.google.com/docs/firestore/security/rules-query
+
+회귀 테스트는 Firebase 호출을 모의 처리해 공개 조회, 관리자 조회, 로그아웃, 빈 결과, 오류 처리를 검증합니다. 실제 Firestore 규칙 테스트는 Firebase Rules Playground 또는 Emulator에서 별도로 확인해야 합니다.

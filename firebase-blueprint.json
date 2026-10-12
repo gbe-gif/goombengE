@@ -4,7 +4,7 @@
       "name": "content",
       "description": "Stores all archive content including images, worldviews, and logs.",
       "securityRules": {
-        "read": "true",
+        "read": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com' || resource.data.isVisible == true",
         "create": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'",
         "update": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'",
         "delete": "request.auth != null && request.auth.token.email == 'workingsh2716@gmail.com'"

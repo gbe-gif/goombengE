@@ -1,3 +1,4 @@
+import Thumbnail from '../components/Thumbnail';
 import { useState, useMemo, useEffect } from 'react';
 import { useContent } from '../hooks/useContent';
 import { useSettings } from '../hooks/useSettings';
@@ -7,7 +8,7 @@ import { ExternalLink, Hash, X } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function WorksPage() {
-  const { content } = useContent();
+  const { content, loading, error } = useContent();
   const { memos } = useSettings();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedPlatform = searchParams.get('platform') || 'all';
@@ -72,13 +73,16 @@ export default function WorksPage() {
     });
   };
 
+  if (loading) return <p role="status" className="text-center py-20">글을 불러오는 중입니다…</p>;
+  if (error) return <p role="alert" className="text-center py-20 text-amber-200">{error}</p>;
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 border-b border-white/10 pb-6">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <span className="text-4xl">📖</span>
-            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Stories</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">작품</h1>
           </div>
           <div className="flex gap-4">
             <Link to="/works" className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">전체 스토리</Link>
@@ -87,7 +91,7 @@ export default function WorksPage() {
         </div>
       </div>
       <div className="mb-10 min-h-[3.5rem] bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
-        {memos['work'] || '\u00A0'}
+        {memos['work'] || '작품 소개를 읽거나, 사이트 이동 버튼으로 작품이 있는 플랫폼을 바로 방문하세요.'}
       </div>
       <div>
         {selectedTag && (
@@ -108,7 +112,7 @@ export default function WorksPage() {
       ) : (
         <>
           <div className="flex flex-wrap gap-4 mb-8 bg-white/5 p-4 rounded-2xl border border-white/10">
-            <select
+            <select aria-label="플랫폼 필터"
               value={selectedPlatform}
               onChange={(e) => setPlatformFilter(e.target.value)}
               className="bg-[#12182B] border border-white/10 text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500/50 transition-colors"
@@ -116,7 +120,7 @@ export default function WorksPage() {
               <option value="all">모든 플랫폼</option>
               {platforms.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
-            <select
+            <select aria-label="장르 필터"
               value={selectedGenre}
               onChange={(e) => setGenreFilter(e.target.value)}
               className="bg-[#12182B] border border-white/10 text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500/50 transition-colors"
@@ -124,7 +128,7 @@ export default function WorksPage() {
               <option value="all">모든 장르</option>
               {genres.map(g => <option key={g} value={g}>{g}</option>)}
             </select>
-            <select
+            <select aria-label="연재 상태 필터"
               value={selectedStatus}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="bg-[#12182B] border border-white/10 text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500/50 transition-colors"
@@ -134,26 +138,32 @@ export default function WorksPage() {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex items-center justify-between mb-5 text-sm text-slate-300">
+            <p>작품 {filteredStories.length}개</p>
+            {(selectedPlatform !== 'all' || selectedGenre !== 'all' || selectedStatus !== 'all' || selectedTag) && <button onClick={() => setSearchParams({})} className="text-blue-200 hover:underline">필터 초기화</button>}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredStories.map(work => (
               <div key={work.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-colors group flex flex-col">
-                <Link to={`/post/${work.id}`} className="block relative aspect-square bg-black/40 overflow-hidden">
-                  {work.imageUrl ? (
-                    <img src={work.imageUrl} alt={work.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#C0C4CC]/30 font-bold text-2xl p-6 text-center break-words">{work.name}</div>
-                  )}
-                  <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                    {work.platform && <span className="px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-xs font-medium text-white border border-white/10">{work.platform}</span>}
-                    {work.status && <span className="px-2 py-1 bg-blue-500/80 backdrop-blur-md rounded-md text-xs font-medium text-white border border-blue-400/30">{work.status}</span>}
-                  </div>
+                <Link to={`/post/${work.id}`} className="block relative aspect-[2/3] bg-black/40 overflow-hidden">
+                  <Thumbnail src={work.imageUrl} alt={work.name} />
                 </Link>
                 <div className="p-5 flex flex-col flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xl font-bold text-white line-clamp-1">
+                    <h3 className="text-xl font-bold text-white line-clamp-2">
                       <Link to={`/post/${work.id}`} className="hover:text-blue-400 transition-colors">{work.name}</Link>
                     </h3>
                   </div>
+                  <div className="flex flex-wrap gap-2 mb-3 text-xs text-slate-300">
+                    {work.platform && <span className="px-2 py-1 rounded bg-white/10">{work.platform}</span>}
+                    {work.status && <span className="px-2 py-1 rounded bg-blue-500/20">{work.status}</span>}
+                    {work.isVisible !== true && <span className="px-2 py-1 text-amber-300">비공개 · 관리자 전용</span>}
+                  </div>
+                  {work.link && (
+                    <a href={work.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 mb-4 bg-blue-500/20 px-4 py-2 rounded-lg justify-center transition-colors">
+                      작품 사이트로 이동 <ExternalLink size={16} />
+                    </a>
+                  )}
                   {work.genre && <p className="text-sm text-[#C0C4CC]/60 mb-3">{work.genre}</p>}
                   {work.excerpt && <p className="text-[#C0C4CC]/80 text-sm line-clamp-2 flex-1 mb-4">{work.excerpt}</p>}
                   
@@ -171,11 +181,7 @@ export default function WorksPage() {
                     </div>
                   )}
 
-                  {work.link && (
-                    <a href={work.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 mt-auto bg-blue-500/10 px-4 py-2 rounded-lg justify-center transition-colors">
-                      보러 가기 <ExternalLink size={16} />
-                    </a>
-                  )}
+
                 </div>
               </div>
             ))}

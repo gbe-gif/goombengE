@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useContent } from '../hooks/useContent';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -9,11 +9,15 @@ import { useState } from 'react';
 
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
-  const { content } = useContent();
+  const { content, loading, error } = useContent();
+  const navigate = useNavigate();
 
   const post = content.find(item => item.id === id);
 
   const [copied, setCopied] = useState(false);
+
+  if (loading) return <p role="status" className="text-center py-20">글을 불러오는 중입니다…</p>;
+  if (error) return <p role="alert" className="text-center py-20 text-amber-200">{error}</p>;
 
   if (!post) {
     return (
@@ -27,11 +31,11 @@ export default function PostDetail() {
   return (
     <article className="max-w-4xl mx-auto">
       <div className="mb-8 border-b border-white/10 pb-8">
-        <Link to={-1 as any} className="inline-flex items-center gap-2 text-[#C0C4CC]/60 hover:text-white mb-6 transition-colors">
+        <button type="button" onClick={() => { if (window.history.state?.idx > 0) navigate(-1); else navigate('/'); }} className="inline-flex items-center gap-2 text-[#C0C4CC]/60 hover:text-white mb-6 transition-colors">
           <ArrowLeft size={20} />
           뒤로 가기
-        </Link>
-        <div className="flex items-center gap-3 mb-4">
+        </button>
+        <div className="flex flex-wrap items-center gap-3 mb-4">
           <span className="px-3 py-1 bg-white/10 text-white rounded-full text-sm uppercase tracking-wider font-medium">
             {getCategoryLabel(post.type)}
           </span>
@@ -49,6 +53,9 @@ export default function PostDetail() {
         {post.excerpt && (
           <p className="text-lg text-[#C0C4CC]/80 mb-6 italic border-l-4 border-blue-500/50 pl-4">{post.excerpt}</p>
         )}
+
+        {post.isVisible !== true && <p className="text-amber-300 text-sm mb-4">비공개 글입니다. 관리자에게만 표시됩니다.</p>}
+        {post.type === 'work' && post.link && <a href={post.link} target="_blank" rel="noopener noreferrer" className="primary-button">작품 사이트로 이동 <ExternalLink size={18} /></a>}
 
         {post.type === 'work' && (
           <div className="flex flex-wrap gap-4 mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
@@ -136,7 +143,7 @@ export default function PostDetail() {
           {post.content || '*내용이 없습니다.*'}
         </Markdown>
 
-        {post.link && (
+        {post.link && post.type !== 'work' && (
           <div className="mt-12 pt-8 border-t border-white/10">
             <a 
               href={post.link}

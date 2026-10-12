@@ -39,7 +39,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
     e.preventDefault();
     setSaving(true);
     try {
-      const dataToSave = { ...formData };
+      const dataToSave = { ...formData, isVisible: formData.isVisible === true };
       
       if (dataToSave.type === 'work') {
         dataToSave.tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
@@ -193,6 +193,11 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
             />
           </div>
         </div>
+
+        <label className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
+          <input type="checkbox" checked={formData.isVisible === true} onChange={e => setFormData(prev => ({ ...prev, isVisible: e.target.checked }))} className="w-5 h-5" />
+          <span className="text-sm text-white">방문자에게 공개하기 <span className="text-slate-400">(해제하면 관리자만 볼 수 있어요)</span></span>
+        </label>
 
         <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
           <input

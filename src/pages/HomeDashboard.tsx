@@ -1,135 +1,53 @@
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { useContent } from '../hooks/useContent';
-import { useMemo } from 'react';
+import ContentCard from '../components/ContentCard';
+import Thumbnail from '../components/Thumbnail';
 import { ArchiveItem } from '../data/mockData';
-import { ChevronRight } from 'lucide-react';
-import { formatKST } from '../lib/formatDate';
-import { getCategoryLabel } from '../utils/category';
-
-function PostItem({ item }: { item: ArchiveItem }) {
-  return (
-    <Link 
-      to={`/post/${item.id}`}
-      className="flex p-5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all shadow-lg shadow-black/20 gap-4 group"
-    >
-      <div className="flex-1 min-w-0 flex flex-col">
-        <div className="flex items-center gap-2 mb-2 flex-wrap">
-          <span className="text-[10px] px-2 py-0.5 bg-black/40 rounded-md text-[#C0C4CC]/80 uppercase">{getCategoryLabel(item.type)}</span>
-          {item.type === 'work' && item.platform && (
-            item.platform.split(',').map(p => (
-              <span key={p.trim()} className="text-[10px] px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded-md uppercase border border-blue-500/30">
-                {p.trim()}
-              </span>
-            ))
-          )}
-        </div>
-        <h3 className="text-base sm:text-lg font-medium text-white mb-1 line-clamp-1 group-hover:text-blue-300 transition-colors">{item.name}</h3>
-        <span className="text-xs text-[#C0C4CC]/60 font-mono mb-2">{formatKST(item.updatedAt || item.date)}</span>
-        {item.excerpt && <p className="text-xs sm:text-sm text-[#C0C4CC]/80 line-clamp-2 mt-auto">{item.excerpt}</p>}
-      </div>
-      {item.imageUrl && (
-        <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-xl overflow-hidden bg-black/40 border border-white/5">
-          <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
-        </div>
-      )}
-    </Link>
-  );
+const destinations = [
+  { to: '/works', icon: '📖', title: '작품', description: '작품 소개와 플랫폼 바로가기' },
+  { to: '/archive/image', icon: '🖼️', title: '이미지', description: '캐릭터 이미지와 공유 자료' },
+  { to: '/resources', icon: '🎁', title: '자료실', description: '스크립트와 다운로드 자료' },
+  { to: '/archive', icon: '🗃️', title: '아카이브', description: '세계관 설정과 테스트 기록' },
+  { to: '/ooc', icon: '🎲', title: 'OOC 놀이터', description: 'OOC 글을 둘러보고 복사하기' },
+  { to: '/notice', icon: '📢', title: '공지', description: '새 소식과 이용 안내' },
+];
+function Section({ title, description, to, items }: { title: string; description: string; to?: string; items: ArchiveItem[] }) {
+  if (!items.length) return null;
+  return <section><div className="section-heading"><div><h2>{title}</h2><p>{description}</p></div>
+    {to && <Link to={to} className="browse-link">전체 보기 <ArrowRight size={16} /></Link>}
+    </div><div className="grid md:grid-cols-2 gap-4">{items.map(item => <ContentCard key={item.id} item={item} />)}</div></section>;
 }
-
-function NoticeItem({ item }: { item: ArchiveItem }) {
-  return (
-    <Link 
-      to={`/post/${item.id}`}
-      className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-white/10 hover:bg-white/5 transition-colors gap-2"
-    >
-      <h3 className="text-base font-medium text-white hover:text-blue-300 transition-colors line-clamp-1">{item.name}</h3>
-      <span className="text-sm text-[#C0C4CC]/60 font-mono whitespace-nowrap shrink-0">{formatKST(item.date)}</span>
-    </Link>
-  );
-}
-
 export default function HomeDashboard() {
-  const { content } = useContent();
-
-  const notices = useMemo(() => {
-    return content.filter(item => item.type === 'notice').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
-  }, [content]);
-
-  const pinned = useMemo(() => {
-    return content.filter(item => item.isPinned).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [content]);
-
-  const latest = useMemo(() => {
-    return content.filter(item => !item.isPinned).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 2);
-  }, [content]);
-
-  const updated = useMemo(() => {
-    return content
-      .filter(item => item.updatedAt && !item.isPinned) // Only items that have been updated
-      .sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime())
-      .slice(0, 2);
-  }, [content]);
-
-  return (
-    <div className="space-y-16">
-      <section>
-        <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-4">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <span className="text-3xl">📢</span> Notice
-          </h2>
-          <Link to="/notice" className="text-sm font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors">
-            더보기 <ChevronRight size={16} />
-          </Link>
-        </div>
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-          {notices.map(item => (
-            <NoticeItem key={item.id} item={item} />
-          ))}
-          {notices.length === 0 && <p className="text-[#C0C4CC]/50 p-6 text-center">등록된 공지사항이 없습니다.</p>}
-        </div>
-      </section>
-
-      {pinned.length > 0 && (
-        <section>
-          <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
-            <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-              <span className="text-3xl">⭐</span> Pinned
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {pinned.map(item => (
-              <PostItem key={item.id} item={item} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section>
-        <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <span className="text-3xl">💡</span> Latest
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {latest.map(item => (
-            <PostItem key={item.id} item={item} />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <span className="text-3xl">🔥</span> Updated
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {updated.map(item => (
-            <PostItem key={item.id} item={item} />
-          ))}
-          {updated.length === 0 && <p className="text-[#C0C4CC]/50 py-4 col-span-full text-center">최근 수정된 글이 없습니다.</p>}
-        </div>
-      </section>
-    </div>
-  );
+  const { content, loading, error } = useContent();
+  const works = content.filter(item => item.type === 'work').slice(0, 4);
+  const images = content.filter(item => item.type === 'image').slice(0, 6);
+  const notices = content.filter(item => item.type === 'notice').slice(0, 2);
+  const pinned = content.filter(item => item.isPinned);
+  const latest = content.filter(item => !item.isPinned && item.type !== 'notice').slice(0, 6);
+  const updated = content.filter(item => item.updatedAt && !item.isPinned).sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime()).slice(0, 4);
+  return <div className="space-y-12">
+    <section className="home-intro"><div className="max-w-2xl">
+      <p className="text-xs tracking-[0.18em] text-blue-200 mb-4">GOOMBENGE · PERSONAL ARCHIVE</p>
+      <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight tracking-tight">이야기와 이미지가<br />차곡차곡 쌓이는 창고.</h1>
+      <p className="text-slate-300 mt-5 leading-relaxed">게으른굼벵이의 작품, 이미지, 공유 자료를 모아두었습니다.<br className="hidden sm:block" /> 처음 오셨다면 아래에서 궁금한 곳부터 둘러보세요.</p>
+      <div className="flex flex-wrap gap-3 mt-7"><Link className="primary-button" to="/works">작품 둘러보기 <ArrowRight size={18} /></Link><Link className="secondary-button" to="/archive/image">이미지 구경하기</Link></div>
+    </div><div className="intro-mark" aria-hidden="true">g<span>.</span></div></section>
+    <nav aria-label="콘텐츠 바로가기" className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+      {destinations.map(destination => <Link key={destination.to} to={destination.to} className="destination-card group">
+        <span className="text-2xl" aria-hidden="true">{destination.icon}</span><div><h2 className="font-semibold text-white group-hover:text-blue-200">{destination.title}</h2><p className="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">{destination.description}</p></div><ArrowRight size={16} className="hidden sm:block ml-auto text-slate-400 shrink-0" />
+      </Link>)}
+    </nav>
+    {loading ? <p role="status" className="text-center text-slate-300 py-8">창고의 글을 불러오는 중입니다…</p> : error ? <p role="alert" className="text-center text-amber-200 py-8">{error}</p> : <>
+      <Section title="공지와 안내" description="방문 전에 확인할 소식" to="/notice" items={notices} />
+      <Section title="먼저 만나보세요" description="창고에 고정해 둔 글" items={pinned} />
+      <Section title="작품 둘러보기" description="소개를 읽고 작품이 있는 플랫폼으로 이동하세요." to="/works" items={works} />
+      {images.length > 0 && <section><div className="section-heading"><div><h2>이미지 모아보기</h2><p>표지를 누르면 이미지와 관련 글을 볼 수 있어요.</p></div><Link to="/archive/image" className="browse-link">전체 보기 <ArrowRight size={16} /></Link></div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">{images.map(item => <Link key={item.id} to={`/post/${item.id}`} className="image-tile group"><div className="aspect-[2/3] bg-black/20"><Thumbnail src={item.imageUrl} alt={item.name} /></div><h3 className="p-3 text-sm text-white line-clamp-2 group-hover:text-blue-200">{item.name}</h3>{item.isVisible !== true && <span className="block px-3 pb-3 text-xs text-amber-300">비공개 · 관리자 전용</span>}</Link>)}</div>
+      </section>}
+      <Section title="새로 들어온 글" description="최근 등록한 작품과 자료" items={latest} />
+      <Section title="최근 업데이트" description="새로운 내용을 더한 글" items={updated} />
+      {content.length === 0 && <p className="text-center text-slate-400 py-8">아직 공개된 글이 없습니다.</p>}
+    </>}
+  </div>;
 }
