@@ -39,9 +39,9 @@ export default function LatestSlideshow({ items, loading }: { items: ArchiveItem
 
   if (!slide) return <section className="home-intro"><div>
     <p className="text-xs tracking-[0.18em] text-blue-200 mb-4">게으른굼벵이의 창고</p>
-    <h1 className="text-3xl sm:text-4xl font-bold text-white">작품과 기록을 둘러보세요.</h1>
+    <h1 className="text-3xl sm:text-4xl font-bold text-white">스토리와 기록을 둘러보세요.</h1>
     <p className="mt-4 text-slate-300">{loading ? '최신 글을 불러오는 중입니다…' : '아래 카테고리에서 궁금한 곳부터 둘러보세요.'}</p>
-    <Link to="/works" className="primary-button mt-6">작품 둘러보기 <ArrowRight size={18} /></Link>
+    <Link to="/works" className="primary-button mt-6">스토리 둘러보기 <ArrowRight size={18} /></Link>
   </div></section>;
 
   return <section className="latest-hero" aria-label="최신 공개 글" aria-roledescription="슬라이드쇼"

@@ -63,7 +63,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           <nav aria-label="주요 메뉴" className="hidden xl:flex items-center gap-1 shrink-0">
-            {[['/notice', '공지'], ['/works', '작품'], ['/resources', '자료실'], ['/archive', '아카이브'], ['/ooc', 'OOC 놀이터']].map(([to, label]) => <NavLink key={to} to={to} className={({isActive}) => `px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? 'bg-blue-400/15 text-blue-200' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}>{label}</NavLink>)}
+            {[['/notice', '공지'], ['/works', '스토리'], ['/resources', '자료실'], ['/archive', '아카이브'], ['/ooc', 'OOC 놀이터']].map(([to, label]) => <NavLink key={to} to={to} className={({isActive}) => `px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? 'bg-blue-400/15 text-blue-200' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}>{label}</NavLink>)}
           </nav>
         </div>
 
@@ -94,7 +94,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <div className="px-4 py-3 flex flex-col">
                   <button onClick={() => setIsStoriesOpen(!isStoriesOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl">📖</span> 작품
+                      <span className="text-xl">📖</span> 스토리
                     </div>
                     {isStoriesOpen ? <ChevronUp size={20} className="text-white/50" /> : <ChevronDown size={20} className="text-white/50" />}
                   </button>
@@ -107,8 +107,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         className="overflow-hidden"
                       >
                         <div className="pl-9 flex flex-col gap-3 mt-4">
-                          <Link onClick={closeMenu} to="/works" className="text-[#C0C4CC]/80 hover:text-white transition-colors">전체 작품</Link>
-                          <Link onClick={closeMenu} to="/platforms" className="text-[#C0C4CC]/80 hover:text-white transition-colors">플랫폼별 작품</Link>
+                          <Link onClick={closeMenu} to="/works" className="text-[#C0C4CC]/80 hover:text-white transition-colors">전체 스토리</Link>
+                          <Link onClick={closeMenu} to="/platforms" className="text-[#C0C4CC]/80 hover:text-white transition-colors">플랫폼별 스토리</Link>
                         </div>
                       </motion.div>
                     )}
@@ -189,7 +189,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main id="main-content" className="pt-24 pb-24 max-w-7xl mx-auto px-4">
         {children}
       </main>
-      <footer className="border-t border-white/10 px-4 py-8 text-center text-xs text-slate-400">게으른굼벵이의 창고 · 작품과 기록을 모아두는 곳</footer>
+      <footer className="border-t border-white/10 px-4 py-8 text-center text-xs text-slate-400">게으른굼벵이의 창고 · 스토리와 기록을 모아두는 곳</footer>
     </div>
   );
 }
