@@ -31,7 +31,7 @@ export default function LatestSlideshow({ items, loading }: { items: ArchiveItem
   useEffect(() => setIndex(0), [signature]);
   useEffect(() => {
     if (slides.length < 2 || paused || interacting || hidden || reducedMotion) return;
-    const timer = window.setInterval(() => setIndex(current => (current + 1) % slides.length), 6000);
+    const timer = window.setInterval(() => setIndex(current => (current + 1) % slides.length), 3000);
     return () => window.clearInterval(timer);
   }, [signature, slides.length, paused, interacting, hidden, reducedMotion, index]);
   const slide = slides[index % slides.length];
@@ -72,3 +72,4 @@ export default function LatestSlideshow({ items, loading }: { items: ArchiveItem
     </div>
   </section>;
 }
+
