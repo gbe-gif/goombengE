@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+
+.pnpm-store/
+tests/.visibility.test.mjs
+tests/.series.test.mjs

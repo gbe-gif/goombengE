@@ -1,3 +1,5 @@
+import { useContent } from '../hooks/useContent';
+import { normalizeSeriesName } from '../utils/series';
 import { useState } from 'react';
 import { db } from '../lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -12,6 +14,8 @@ interface ContentFormProps {
 }
 
 export default function ContentForm({ item, onClose }: ContentFormProps) {
+  const { content } = useContent();
+  const existingSeries = [...new Set(content.filter(story => story.type === 'work').map(story => normalizeSeriesName(story.seriesName)).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ko'));
   const [formData, setFormData] = useState<Partial<ArchiveItem>>(
     item || {
       id: crypto.randomUUID(),
@@ -39,10 +43,15 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
     e.preventDefault();
     setSaving(true);
     try {
-      const dataToSave = { ...formData };
+      const dataToSave = { ...formData, isVisible: formData.isVisible === true };
       
       if (dataToSave.type === 'work') {
         dataToSave.tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
+        dataToSave.seriesName = normalizeSeriesName(formData.seriesName);
+        if (!dataToSave.seriesName || !Number.isInteger(dataToSave.seriesOrder) || dataToSave.seriesOrder! < 1) delete dataToSave.seriesOrder;
+      } else {
+        delete dataToSave.seriesName;
+        delete dataToSave.seriesOrder;
       }
       
       if (item) {
@@ -145,6 +154,19 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
                 <input name="status" value={formData.status || ''} onChange={handleChange} placeholder="예: 연재중" className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-white focus:border-blue-500" />
               </div>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_160px] gap-4">
+              <div>
+                <label htmlFor="series-name" className="block text-sm font-medium text-white/60 mb-2">시리즈 (선택)</label>
+                <input id="series-name" name="seriesName" list="series-options" value={formData.seriesName || ''} onChange={handleChange} placeholder="기존 시리즈를 선택하거나 새 이름 입력" className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white" />
+                <datalist id="series-options">{existingSeries.map(name => <option key={name} value={name} />)}</datalist>
+                <p className="text-xs text-slate-400 mt-2">같은 이름의 스토리는 한 시리즈로 묶입니다. 비우면 시리즈에서 제외됩니다.</p>
+              </div>
+              <div>
+                <label htmlFor="series-order" className="block text-sm font-medium text-white/60 mb-2">시리즈 순서 (선택)</label>
+                <input id="series-order" type="number" min="1" step="1" disabled={!formData.seriesName?.trim()} value={formData.seriesOrder ?? ''} onChange={e => setFormData(prev => ({ ...prev, seriesOrder: e.target.value === '' ? undefined : e.target.valueAsNumber }))} placeholder="예: 1" className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white disabled:opacity-40" />
+                <p className="text-xs text-slate-400 mt-2">순서를 비우면 작성일 순으로 표시됩니다.</p>
+              </div>
+            </div>
             <div>
               <label className="block text-sm font-medium text-white/60 mb-2">태그 (쉼표로 구분)</label>
               <input 
@@ -193,6 +215,11 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
             />
           </div>
         </div>
+
+        <label className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
+          <input type="checkbox" checked={formData.isVisible === true} onChange={e => setFormData(prev => ({ ...prev, isVisible: e.target.checked }))} className="w-5 h-5" />
+          <span className="text-sm text-white">방문자에게 공개하기 <span className="text-slate-400">(해제하면 관리자만 볼 수 있어요)</span></span>
+        </label>
 
         <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
           <input

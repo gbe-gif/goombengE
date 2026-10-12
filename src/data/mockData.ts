@@ -13,6 +13,8 @@ export interface ArchiveItem {
   genre?: string; // For works
   status?: string; // For works
   tags?: string[]; // For works
+  seriesName?: string;
+  seriesOrder?: number;
   version?: string; // For resources
   downloadUrl?: string; // For resources
   excerpt?: string; // Short preview

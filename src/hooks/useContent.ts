@@ -1,45 +1,27 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot, getDocs, doc, setDoc } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { ArchiveItem, initialArchiveData } from '../data/mockData';
+import { ArchiveItem } from '../data/mockData';
+import { useAuth } from './useAuth';
 
 export function useContent() {
-  const [content, setContent] = useState<ArchiveItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
+  const { isAdmin, loading: authLoading } = useAuth();
+  const [state, setState] = useState<{ owner: boolean; content: ArchiveItem[]; loading: boolean; error: string | null }>({ owner: false, content: [], loading: true, error: null });
   useEffect(() => {
-    const q = query(collection(db, 'content'), orderBy('date', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      if (snapshot.empty) {
-        // Seed initial data if empty
-        seedData();
-      } else {
-        const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ArchiveItem));
-        setContent(items);
-        setLoading(false);
-      }
-    }, (error) => {
-      console.error("Error fetching content:", error);
-      // Fallback to mock data if permissions fail or something
-      setContent(initialArchiveData);
-      setLoading(false);
+    if (authLoading) return;
+    setState({ owner: isAdmin, content: [], loading: true, error: null });
+    const source = collection(db, 'content');
+    const q = isAdmin ? query(source) : query(source, where('isVisible', '==', true));
+    return onSnapshot(q, snapshot => {
+      const items = snapshot.docs.map(document => ({ ...document.data(), id: document.id } as ArchiveItem));
+      items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      setState({ owner: isAdmin, content: items, loading: false, error: null });
+    }, error => {
+      console.error('Error fetching content:', error);
+      setState({ owner: isAdmin, content: [], loading: false, error: '글을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' });
     });
-
-    return () => unsubscribe();
-  }, []);
-
-  const seedData = async () => {
-    try {
-      // Just for local/first-time seeding
-      for (const item of initialArchiveData) {
-        await setDoc(doc(db, 'content', item.id), item);
-      }
-    } catch (error) {
-      console.error("Error seeding data:", error);
-      setContent(initialArchiveData);
-      setLoading(false);
-    }
-  };
-
-  return { content, loading };
+  }, [isAdmin, authLoading]);
+  // Prevent stale private results from being rendered during logout.
+  if (authLoading || state.owner !== isAdmin) return { content: [], loading: true, error: null };
+  return { content: state.content, loading: state.loading, error: state.error };
 }

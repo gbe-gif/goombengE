@@ -1,3 +1,4 @@
+import Thumbnail from '../components/Thumbnail';
 import { useParams, Link } from 'react-router-dom';
 import { useContent } from '../hooks/useContent';
 import { useSettings } from '../hooks/useSettings';
@@ -7,7 +8,7 @@ import { Image as ImageIcon, FileText, Database, ArrowLeft } from 'lucide-react'
 
 export default function ArchiveCategoryPage() {
   const { category } = useParams<{ category: string }>();
-  const { content } = useContent();
+  const { content, loading, error } = useContent();
   const { memos } = useSettings();
 
   const { title, icon, items, type } = useMemo(() => {
@@ -15,15 +16,15 @@ export default function ArchiveCategoryPage() {
     let i = <></>;
     let ty = '';
     if (category === 'image') {
-      t = 'Category I: Image Archive';
+      t = '이미지 아카이브';
       i = <ImageIcon className="text-blue-400" size={32} />;
       ty = 'image';
     } else if (category === 'worldview') {
-      t = 'Category W: Worldview';
+      t = '세계관 설정';
       i = <FileText className="text-purple-400" size={32} />;
       ty = 'worldview';
     } else if (category === 'log') {
-      t = 'Category L: Test Logs';
+      t = '테스트 기록';
       i = <Database className="text-emerald-400" size={32} />;
       ty = 'log';
     }
@@ -33,6 +34,9 @@ export default function ArchiveCategoryPage() {
   }, [category, content]);
 
   if (!type) return <div className="text-center py-20">잘못된 카테고리입니다.</div>;
+
+  if (loading) return <p role="status" className="text-center py-20">글을 불러오는 중입니다…</p>;
+  if (error) return <p role="alert" className="text-center py-20 text-amber-200">{error}</p>;
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -58,19 +62,15 @@ export default function ArchiveCategoryPage() {
             to={`/post/${item.id}`}
             className="group block bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 shadow-lg shadow-black/20"
           >
-            <div className="aspect-square overflow-hidden bg-black/40 relative">
-              <img 
-                src={item.imageUrl || `https://dummyimage.com/400x400/0B1021/10B981&text=${item.code || 'IMG'}`} 
-                alt={item.name}
-                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
-                referrerPolicy="no-referrer"
-              />
+            <div className="aspect-[2/3] overflow-hidden bg-black/40 relative">
+              <Thumbnail src={item.imageUrl} alt={item.name} />
             </div>
             <div className="p-4">
+              {item.isVisible !== true && <span className="block text-xs text-amber-300 mb-2">비공개 · 관리자 전용</span>}
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-mono font-semibold text-white/50 bg-white/10 px-2 py-1 rounded-md">{item.code || item.type.substring(0, 1).toUpperCase()}</span>
               </div>
-              <h3 className="text-sm md:text-base font-medium text-white truncate">{item.name}</h3>
+              <h3 className="text-sm md:text-base font-medium text-white line-clamp-2">{item.name}</h3>
             </div>
           </Link>
         ))}

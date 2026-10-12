@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import React, { act } from 'react';
+import { create } from 'react-test-renderer';
+import { useContent } from '../src/hooks/useContent';
+import { AuthContext } from 'mock-auth';
+import { calls, listeners } from 'mock-firestore';
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+let result;
+const renders=[];
+function Probe(){ result=useContent(); renders.push(result); return null; }
+const tree=value=>React.createElement(AuthContext.Provider,{value},React.createElement(Probe));
+const snapshot=items=>({docs:items.map(item=>({id:item.id,data:()=>item}))});
+test('content visibility and authentication regression', async t=>{
+ let renderer;
+ await act(async()=>{renderer=create(tree({isAdmin:false,loading:true}));});
+ await t.test('waits for authentication before subscribing',()=>{assert.equal(calls.length,0);assert.equal(result.loading,true);assert.deepEqual(result.content,[]);});
+ await act(async()=>renderer.update(tree({isAdmin:false,loading:false})));
+ await t.test('visitor query only requests explicitly public posts',()=>assert.deepEqual(calls.at(-1).filters,[['isVisible','==',true]]));
+ await act(async()=>listeners.at(-1).success(snapshot([{id:'old',date:'2026-01-01',isVisible:true},{id:'new',date:'2026-10-01',isVisible:true}])));
+ await t.test('public snapshots render newest first',()=>assert.deepEqual(result.content.map(x=>x.id),['new','old']));
+ await act(async()=>listeners.at(-1).success(snapshot([])));
+ await t.test('empty database stays empty without mock fallback',()=>{assert.equal(result.loading,false);assert.deepEqual(result.content,[]);});
+ await act(async()=>listeners.at(-1).error(new Error('permission-denied')));
+ await t.test('errors clear results instead of publishing fallback data',()=>{assert.deepEqual(result.content,[]);assert.ok(result.error);});
+ await act(async()=>renderer.update(tree({isAdmin:true,loading:false})));
+ const adminListener=listeners.at(-1);
+ await act(async()=>adminListener.success(snapshot([{id:'private',date:'2026-10-01',isVisible:false}])));
+ await t.test('administrator can still manage private posts',()=>{assert.deepEqual(calls.at(-1).filters,[]);assert.equal(result.content[0].id,'private');});
+ const beforeLogout=renders.length;
+ await act(async()=>renderer.update(tree({isAdmin:false,loading:false})));
+ await t.test('logout closes admin listener and clears private data on every render',()=>{assert.equal(adminListener.closed,true);assert.ok(renders.slice(beforeLogout).every(r=>r.content.length===0));assert.deepEqual(calls.at(-1).filters,[['isVisible','==',true]]);});
+ await act(async()=>renderer.unmount());
+});
