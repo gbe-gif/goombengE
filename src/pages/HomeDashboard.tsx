@@ -1,3 +1,4 @@
+import LatestSlideshow from '../components/LatestSlideshow';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContent } from '../hooks/useContent';
@@ -27,12 +28,7 @@ export default function HomeDashboard() {
   const latest = content.filter(item => !item.isPinned && item.type !== 'notice').slice(0, 6);
   const updated = content.filter(item => item.updatedAt && !item.isPinned).sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime()).slice(0, 4);
   return <div className="space-y-12">
-    <section className="home-intro"><div className="max-w-2xl">
-      <p className="text-xs tracking-[0.18em] text-blue-200 mb-4">GOOMBENGE · PERSONAL ARCHIVE</p>
-      <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight tracking-tight">이야기와 이미지가<br />차곡차곡 쌓이는 창고.</h1>
-      <p className="text-slate-300 mt-5 leading-relaxed">게으른굼벵이의 작품, 이미지, 공유 자료를 모아두었습니다.<br className="hidden sm:block" /> 처음 오셨다면 아래에서 궁금한 곳부터 둘러보세요.</p>
-      <div className="flex flex-wrap gap-3 mt-7"><Link className="primary-button" to="/works">작품 둘러보기 <ArrowRight size={18} /></Link><Link className="secondary-button" to="/archive/image">이미지 구경하기</Link></div>
-    </div><div className="intro-mark" aria-hidden="true">g<span>.</span></div></section>
+    <LatestSlideshow items={content} loading={loading} />
     <nav aria-label="콘텐츠 바로가기" className="grid grid-cols-2 lg:grid-cols-3 gap-3">
       {destinations.map(destination => <Link key={destination.to} to={destination.to} className="destination-card group">
         <span className="text-2xl" aria-hidden="true">{destination.icon}</span><div><h2 className="font-semibold text-white group-hover:text-blue-200">{destination.title}</h2><p className="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">{destination.description}</p></div><ArrowRight size={16} className="hidden sm:block ml-auto text-slate-400 shrink-0" />
