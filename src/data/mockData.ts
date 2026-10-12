@@ -5,6 +5,7 @@ export interface ArchiveItem {
   type: 'image' | 'worldview' | 'log' | 'notice' | 'resource' | 'work' | 'ooc' | 'devnote';
   imageUrl?: string;
   link?: string;
+  storyLinks?: { label: string; url: string }[];
   date: string; // Created At
   updatedAt?: string; // For "Recently Updated"
   content?: string; // Markdown content

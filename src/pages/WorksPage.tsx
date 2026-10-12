@@ -1,3 +1,4 @@
+import StoryLinks from '../components/StoryLinks';
 import { normalizeSeriesName, seriesUrl } from '../utils/series';
 import StoryTabs from '../components/StoryTabs';
 import Thumbnail from '../components/Thumbnail';
@@ -6,7 +7,7 @@ import { useContent } from '../hooks/useContent';
 import { useSettings } from '../hooks/useSettings';
 import { ArchiveItem } from '../data/mockData';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ExternalLink, Hash, X } from 'lucide-react';
+import { Hash, X } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function WorksPage() {
@@ -159,11 +160,7 @@ export default function WorksPage() {
                     {work.isVisible !== true && <span className="px-2 py-1 text-amber-300">비공개 · 관리자 전용</span>}
                   </div>
                   {normalizeSeriesName(work.seriesName) && <Link to={seriesUrl(work.seriesName!)} className="text-xs text-blue-200 mb-3 hover:underline">📚 {normalizeSeriesName(work.seriesName)}</Link>}
-                  {work.link && (
-                    <a href={work.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 mb-4 bg-blue-500/20 px-4 py-2 rounded-lg justify-center transition-colors">
-                      스토리 사이트로 이동 <ExternalLink size={16} />
-                    </a>
-                  )}
+                  <StoryLinks item={work} compact />
                   {work.genre && <p className="text-sm text-[#C0C4CC]/60 mb-3">{work.genre}</p>}
                   {work.excerpt && <p className="text-[#C0C4CC]/80 text-sm line-clamp-2 flex-1 mb-4">{work.excerpt}</p>}
                   

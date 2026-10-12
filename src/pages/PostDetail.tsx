@@ -1,3 +1,4 @@
+import StoryLinks from '../components/StoryLinks';
 import SeriesShelf from '../components/SeriesShelf';
 import { groupStoriesBySeries, normalizeSeriesName, seriesUrl } from '../utils/series';
 import { useAuth } from '../hooks/useAuth';
@@ -62,7 +63,7 @@ export default function PostDetail() {
         )}
 
         {post.isVisible !== true && <p className="text-amber-300 text-sm mb-4">비공개 글입니다. 관리자에게만 표시됩니다.</p>}
-        {post.type === 'work' && post.link && <a href={post.link} target="_blank" rel="noopener noreferrer" className="primary-button">스토리 사이트로 이동 <ExternalLink size={18} /></a>}
+        {post.type === 'work' && <StoryLinks item={post} />}
 
         {post.type === 'work' && (
           <div className="flex flex-wrap gap-4 mt-6 p-4 bg-white/5 rounded-xl border border-white/10">

@@ -1,10 +1,10 @@
+import StoryLinks from '../components/StoryLinks';
 import StoryTabs from '../components/StoryTabs';
 import Thumbnail from '../components/Thumbnail';
 import { useMemo } from 'react';
 import { useContent } from '../hooks/useContent';
 import { useSettings } from '../hooks/useSettings';
 import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
 
 export default function PlatformsPage() {
   const { content, loading, error } = useContent();
@@ -68,11 +68,7 @@ export default function PlatformsPage() {
                         <Link to={`/post/${work.id}`} className="hover:text-blue-400 transition-colors">{work.name}</Link>
                       </h3>
                       {work.isVisible !== true && <span className="text-xs text-amber-300 mb-3">비공개 · 관리자 전용</span>}
-                      {work.link && (
-                        <a href={work.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg justify-center mb-4">
-                          {platform}에서 보기 <ExternalLink size={16} />
-                        </a>
-                      )}
+                      <StoryLinks item={work} compact />
                       {work.excerpt && <p className="text-[#C0C4CC]/80 text-sm line-clamp-2 mb-4 flex-1">{work.excerpt}</p>}
 
                     </div>

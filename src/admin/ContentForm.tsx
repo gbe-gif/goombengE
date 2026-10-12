@@ -1,5 +1,6 @@
 import { useContent } from '../hooks/useContent';
 import { normalizeSeriesName } from '../utils/series';
+import { DEFAULT_STORY_LINK_LABEL, getStoryLinks, isStoryUrl } from '../utils/storyLinks';
 import { useState } from 'react';
 import { db } from '../lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -38,18 +39,28 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
 
   const [tagsInput, setTagsInput] = useState(item?.tags?.join(', ') || '');
   const [saving, setSaving] = useState(false);
+  const [storyLinks, setStoryLinks] = useState(() => getStoryLinks(item || {}));
+  const addStoryLink = (label = DEFAULT_STORY_LINK_LABEL) => setStoryLinks(prev => [...prev, { label, url: '' }]);
+  const updateStoryLink = (index: number, field: 'label' | 'url', value: string) => setStoryLinks(prev => prev.map((link, i) => i === index ? { ...link, [field]: value } : link));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.type === 'work' && storyLinks.some(link => !isStoryUrl(link.url.trim()))) {
+      alert('스토리 링크에 http:// 또는 https://로 시작하는 주소를 입력해 주세요.');
+      return;
+    }
     setSaving(true);
     try {
       const dataToSave = { ...formData, isVisible: formData.isVisible === true };
       
       if (dataToSave.type === 'work') {
+        dataToSave.storyLinks = storyLinks.map(link => ({ label: link.label.trim() || DEFAULT_STORY_LINK_LABEL, url: link.url.trim() }));
+        delete dataToSave.link;
         dataToSave.tags = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
         dataToSave.seriesName = normalizeSeriesName(formData.seriesName);
         if (!dataToSave.seriesName || !Number.isInteger(dataToSave.seriesOrder) || dataToSave.seriesOrder! < 1) delete dataToSave.seriesOrder;
       } else {
+        delete dataToSave.storyLinks;
         delete dataToSave.seriesName;
         delete dataToSave.seriesOrder;
       }
@@ -204,7 +215,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
               className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500" 
             />
           </div>
-          <div>
+          {formData.type !== 'work' && <div>
             <label className="block text-sm font-medium text-white/60 mb-2">외부 링크 (선택)</label>
             <input 
               name="link" 
@@ -213,8 +224,24 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
               placeholder="https://..."
               className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500" 
             />
-          </div>
+          </div>}
         </div>
+
+        {formData.type === 'work' && <section className="space-y-4 rounded-xl border border-white/10 bg-white/5 p-4">
+          <div><h3 className="font-semibold">스토리 사이트 링크</h3><p className="text-sm text-slate-400 mt-1">버전이나 플랫폼별로 원하는 만큼 추가하세요. 입력한 순서대로 버튼이 표시됩니다.</p></div>
+          {storyLinks.map((link, index) => <div key={index} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 border-b border-white/10 pb-4">
+            <div><label htmlFor={`story-label-${index}`} className="block text-sm text-slate-300 mb-2">버튼 문구 {index + 1}</label>
+              <input id={`story-label-${index}`} value={link.label} onChange={e => updateStoryLink(index, 'label', e.target.value)} placeholder={DEFAULT_STORY_LINK_LABEL} className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white" /></div>
+            <div><label htmlFor={`story-url-${index}`} className="block text-sm text-slate-300 mb-2">사이트 주소 {index + 1}</label>
+              <input id={`story-url-${index}`} type="url" required value={link.url} onChange={e => updateStoryLink(index, 'url', e.target.value)} placeholder="https://..." className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white" /></div>
+            <button type="button" aria-label={`스토리 링크 ${index + 1} 삭제`} onClick={() => setStoryLinks(prev => prev.filter((_, i) => i !== index))} className="sm:self-end rounded-lg px-3 py-3 text-red-300 hover:bg-red-500/10">삭제</button>
+          </div>)}
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => addStoryLink()} className="rounded-lg bg-blue-500/20 px-4 py-2 text-sm text-blue-200 hover:bg-blue-500/30">+ 링크 추가</button>
+            <button type="button" onClick={() => addStoryLink('세이프 버전으로 이동')} className="rounded-lg bg-white/10 px-4 py-2 text-sm hover:bg-white/20">+ 세이프 버전</button>
+            <button type="button" onClick={() => addStoryLink('언세이프 버전으로 이동')} className="rounded-lg bg-white/10 px-4 py-2 text-sm hover:bg-white/20">+ 언세이프 버전</button>
+          </div>
+        </section>}
 
         <label className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
           <input type="checkbox" checked={formData.isVisible === true} onChange={e => setFormData(prev => ({ ...prev, isVisible: e.target.checked }))} className="w-5 h-5" />
