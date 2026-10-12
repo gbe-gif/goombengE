@@ -51,3 +51,9 @@ firebase deploy --only firestore:rules --project gen-lang-client-0458258462
 Firebase 조회와 규칙의 관계: https://firebase.google.com/docs/firestore/security/rules-query
 
 회귀 테스트는 Firebase 호출을 모의 처리해 공개 조회, 관리자 조회, 로그아웃, 빈 결과, 오류 처리를 검증합니다. 실제 Firestore 규칙 테스트는 Firebase Rules Playground 또는 Emulator에서 별도로 확인해야 합니다.
+
+## 스토리 시리즈
+
+관리자 → 스토리 수정에서 시리즈명을 입력하거나 기존 이름을 선택하세요. 같은 이름을 지정한 스토리는 /series의 시리즈별 목록과 상세 화면의 시리즈 썸네일 줄에 묶여 표시됩니다. 선택적인 시리즈 순서(1, 2, 3…)를 지정할 수 있습니다. 순서가 없는 스토리는 지정된 순서 뒤에 작성일 순으로 표시됩니다. 시리즈명을 비우고 저장하면 묶음에서 제외됩니다. 기존 글에는 시리즈를 자동 지정하지 않습니다. 방문자용 묶음에는 공개 스토리만 포함됩니다. 추가 컬렉션이나 규칙 변경 없이 기존 content 문서의 seriesName / seriesOrder 필드를 사용합니다.
+
+npm run test:series로 묶음·정렬·비공개 제외 검사를 실행할 수 있습니다.

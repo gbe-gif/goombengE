@@ -1,3 +1,4 @@
+import StoryTabs from '../components/StoryTabs';
 import Thumbnail from '../components/Thumbnail';
 import { useMemo } from 'react';
 import { useContent } from '../hooks/useContent';
@@ -38,10 +39,7 @@ export default function PlatformsPage() {
             <span className="text-4xl">📖</span>
             <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">스토리</h1>
           </div>
-          <div className="flex gap-4">
-            <Link to="/works" className="text-[#C0C4CC]/60 hover:text-white pb-1 transition-colors">전체 스토리</Link>
-            <Link to="/platforms" className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">플랫폼별 스토리</Link>
-          </div>
+          <StoryTabs />
         </div>
       </div>
 

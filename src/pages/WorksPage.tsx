@@ -1,3 +1,5 @@
+import { normalizeSeriesName, seriesUrl } from '../utils/series';
+import StoryTabs from '../components/StoryTabs';
 import Thumbnail from '../components/Thumbnail';
 import { useState, useMemo, useEffect } from 'react';
 import { useContent } from '../hooks/useContent';
@@ -84,10 +86,7 @@ export default function WorksPage() {
             <span className="text-4xl">📖</span>
             <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">스토리</h1>
           </div>
-          <div className="flex gap-4">
-            <Link to="/works" className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1">전체 스토리</Link>
-            <Link to="/platforms" className="text-[#C0C4CC]/60 hover:text-white pb-1 transition-colors">플랫폼별 스토리</Link>
-          </div>
+          <StoryTabs />
         </div>
       </div>
       <div className="mb-10 min-h-[3.5rem] bg-white/5 border border-white/10 rounded-xl p-5 text-sm text-[#C0C4CC]/80 whitespace-pre-wrap leading-relaxed shadow-lg shadow-black/20">
@@ -159,6 +158,7 @@ export default function WorksPage() {
                     {work.status && <span className="px-2 py-1 rounded bg-blue-500/20">{work.status}</span>}
                     {work.isVisible !== true && <span className="px-2 py-1 text-amber-300">비공개 · 관리자 전용</span>}
                   </div>
+                  {normalizeSeriesName(work.seriesName) && <Link to={seriesUrl(work.seriesName!)} className="text-xs text-blue-200 mb-3 hover:underline">📚 {normalizeSeriesName(work.seriesName)}</Link>}
                   {work.link && (
                     <a href={work.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 mb-4 bg-blue-500/20 px-4 py-2 rounded-lg justify-center transition-colors">
                       스토리 사이트로 이동 <ExternalLink size={16} />

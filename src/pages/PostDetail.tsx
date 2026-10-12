@@ -1,3 +1,6 @@
+import SeriesShelf from '../components/SeriesShelf';
+import { groupStoriesBySeries, normalizeSeriesName, seriesUrl } from '../utils/series';
+import { useAuth } from '../hooks/useAuth';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useContent } from '../hooks/useContent';
 import Markdown from 'react-markdown';
@@ -11,6 +14,7 @@ export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
   const { content, loading, error } = useContent();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
 
   const post = content.find(item => item.id === id);
 
@@ -27,6 +31,9 @@ export default function PostDetail() {
       </div>
     );
   }
+
+  const seriesName = post.type === 'work' ? normalizeSeriesName(post.seriesName) : '';
+  const seriesStories = seriesName ? groupStoriesBySeries(content, isAdmin).get(seriesName) || [] : [];
 
   return (
     <article className="max-w-4xl mx-auto">
@@ -112,6 +119,11 @@ export default function PostDetail() {
           </div>
         )}
       </div>
+
+      {seriesName && <section className="mb-10 border-b border-white/10 pb-7">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-5"><div><p className="text-xs text-blue-200 mb-1">이 스토리가 속한 시리즈</p><h2 className="text-xl font-semibold text-white">{seriesName}</h2></div><Link to={seriesUrl(seriesName)} className="browse-link">시리즈 전체 보기 →</Link></div>
+        <SeriesShelf items={seriesStories} currentId={post.id} />
+      </section>}
 
       <div className="prose prose-invert prose-emerald max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-h5:text-lg prose-h5:font-semibold prose-h6:text-base prose-headings:text-white">
         {post.type === 'ooc' && (

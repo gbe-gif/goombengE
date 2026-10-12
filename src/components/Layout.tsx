@@ -109,6 +109,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         <div className="pl-9 flex flex-col gap-3 mt-4">
                           <Link onClick={closeMenu} to="/works" className="text-[#C0C4CC]/80 hover:text-white transition-colors">전체 스토리</Link>
                           <Link onClick={closeMenu} to="/platforms" className="text-[#C0C4CC]/80 hover:text-white transition-colors">플랫폼별 스토리</Link>
+                          <Link onClick={closeMenu} to="/series" className="text-[#C0C4CC]/80 hover:text-white transition-colors">시리즈별 스토리</Link>
                         </div>
                       </motion.div>
                     )}

@@ -1,3 +1,4 @@
+import SeriesPage from './pages/SeriesPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import HomeDashboard from './pages/HomeDashboard';
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/resources" element={<ResourcesPage />} />
           <Route path="/works" element={<WorksPage />} />
           <Route path="/platforms" element={<PlatformsPage />} />
+          <Route path="/series" element={<SeriesPage />} />
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/archive/:category" element={<ArchiveCategoryPage />} />
           <Route path="/ooc" element={<OOCPage />} />

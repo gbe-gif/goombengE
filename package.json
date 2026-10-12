@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "test:visibility": "node tests/run-visibility.mjs"
+    "test:visibility": "node tests/run-visibility.mjs",
+    "test:series": "node tests/run-series.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
