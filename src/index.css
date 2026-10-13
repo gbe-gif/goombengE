@@ -29,7 +29,7 @@ button:disabled { cursor: wait; }
 .browse-link { display: inline-flex; align-items: center; gap: .4rem; font-size: .875rem; white-space: nowrap; color: #bfdbfe; }
 @media (max-width: 767px) { .intro-mark { display: none; } .destination-card { padding: 1rem; align-items: flex-start; gap: .6rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }
-.latest-hero { position: relative; overflow: hidden; border: 1px solid #ffffff18; border-radius: 1.5rem; background: #121a2e; isolation: isolate; }
+.latest-hero { position: relative; overflow: clip; border: 1px solid #ffffff18; border-radius: 1.5rem; background: #121a2e; isolation: isolate; }
 .hero-backdrop { position: absolute; inset: -40%; z-index: -3; opacity: .6; filter: blur(45px); pointer-events: none; }
 .hero-backdrop img { object-fit: cover; }
 .hero-shade { position: absolute; inset: 0; z-index: -2; background: linear-gradient(90deg, #0b1021e8 10%, #0b1021aa 55%, #0b102128); }
