@@ -3,6 +3,10 @@
 
 :root { color-scheme: dark; font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif; }
 body { margin: 0; }
+.post-body { overflow-wrap: anywhere; }
+.post-body pre, .post-body table { max-width: 100%; overflow-x: auto; }
+.post-body table { display: block; }
+.post-body iframe, .post-body video { max-width: 100%; }
 button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #93c5fd; outline-offset: 4px; }
 button { cursor: pointer; }
@@ -59,4 +63,27 @@ button:disabled { cursor: wait; }
   .hero-dots { gap: 0; }
   .hero-dots button { width: 25px; }
   .hero-counter { margin-right: .25rem; }
+}
+
+@media (max-width: 639px) {
+  .visitor-menu a, .visitor-menu button { min-height: 44px; }
+  .visitor-menu a { display: flex; align-items: center; }
+  .hero-controls { flex-direction: column; align-items: center; padding: 0 1rem 1rem; }
+  .hero-dots button { width: 44px; height: 44px; flex-shrink: 0; }
+  .hero-navigation button { width: 44px; height: 44px; flex-shrink: 0; }
+  .hero-copy h1, main h1, .story-card h3 { word-break: keep-all; overflow-wrap: anywhere; }
+  .story-card { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: start; }
+  .story-card-content { padding: 1rem; }
+  .story-card h3 { font-size: 1rem; }
+  .story-cover { margin: 1rem 0 1rem 1rem; width: 80px; border-radius: .5rem; }
+  .section-heading { flex-wrap: wrap; align-items: flex-start; }
+  .browse-link { min-height: 44px; }
+  main select { min-height: 44px; max-width: 100%; }
+}
+@media (max-width: 380px) {
+  .hero-slide { flex-direction: column; }
+  .hero-cover { order: -1; align-self: center; width: 96px; margin-top: 0; }
+  .hero-copy { width: 100%; }
+  [aria-label="콘텐츠 바로가기"] { grid-template-columns: minmax(0, 1fr); }
+  .destination-card { align-items: center; }
 }

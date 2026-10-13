@@ -164,11 +164,11 @@ export default function WorksPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredStories.map(work => (
-              <div key={work.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-colors group flex flex-col">
-                <Link to={`/post/${work.id}`} className="block relative aspect-[2/3] bg-black/40 overflow-hidden">
+              <div key={work.id} className="story-card bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-colors group flex flex-col">
+                <Link to={`/post/${work.id}`} className="story-cover block relative aspect-[2/3] bg-black/40 overflow-hidden">
                   <Thumbnail src={work.imageUrl} alt={work.name} />
                 </Link>
-                <div className="p-5 flex flex-col flex-1">
+                <div className="story-card-content p-5 flex flex-col flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-xl font-bold text-white line-clamp-2">
                       <Link to={`/post/${work.id}`} className="hover:text-blue-400 transition-colors">{work.name}</Link>

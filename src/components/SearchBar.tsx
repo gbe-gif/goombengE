@@ -50,7 +50,7 @@ export default function SearchBar({ onSelect }: { onSelect?: () => void }) {
             setIsOpen(true);
           }}
           onFocus={() => setIsOpen(true)}
-          className="w-full bg-white/5 border border-white/10 rounded-full py-1.5 pl-10 pr-10 text-sm text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 transition-colors"
+          className="w-full bg-white/5 border border-white/10 rounded-full min-h-11 sm:min-h-0 py-2 sm:py-1.5 pl-10 pr-12 text-base sm:text-sm text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 transition-colors"
         />
         {query && (
           <button aria-label="검색어 지우기"
@@ -58,7 +58,7 @@ export default function SearchBar({ onSelect }: { onSelect?: () => void }) {
               setQuery('');
               setIsOpen(false);
             }}
-            className="absolute right-3 text-[#C0C4CC]/50 hover:text-white"
+            className="absolute right-0 w-11 h-11 flex items-center justify-center text-[#C0C4CC]/50 hover:text-white"
           >
             <X size={16} />
           </button>
@@ -66,14 +66,14 @@ export default function SearchBar({ onSelect }: { onSelect?: () => void }) {
       </div>
 
       {isOpen && query.trim().length > 0 && (
-        <div className="absolute top-full mt-2 left-0 right-0 bg-[#12182B] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 max-h-96 overflow-y-auto">
+        <div className="absolute top-full mt-2 left-0 right-0 bg-[#12182B] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 max-h-[min(24rem,40dvh)] overflow-y-auto">
           {searchResults.length > 0 ? (
             <ul className="py-2">
               {searchResults.map((item) => (
                 <li key={item.id}>
                   <button
                     onClick={() => handleSelect(item.id)}
-                    className="w-full text-left px-4 py-2 hover:bg-white/5 transition-colors flex flex-col gap-1"
+                    className="w-full min-h-11 text-left px-4 py-2 hover:bg-white/5 transition-colors flex flex-col gap-1"
                   >
                     <div className="text-sm font-medium text-white line-clamp-1">{item.name}</div>
                     {item.excerpt && (

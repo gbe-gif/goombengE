@@ -76,7 +76,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="absolute top-16 left-0 right-0 overflow-hidden bg-[#0B1021] border-b border-white/10 shadow-2xl max-h-[calc(100dvh-4rem)] overflow-y-auto"
             >
-              <nav className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-2">
+              <nav className="visitor-menu max-w-7xl mx-auto px-4 py-6 flex flex-col gap-2">
                 <div className="px-4 py-2 sm:hidden -ml-4">
                   <SearchBar onSelect={closeMenu} />
                 </div>
@@ -92,7 +92,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Link>
 
                 <div className="px-4 py-3 flex flex-col">
-                  <button onClick={() => setIsStoriesOpen(!isStoriesOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
+                  <button aria-expanded={isStoriesOpen} onClick={() => setIsStoriesOpen(!isStoriesOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
                     <div className="flex items-center gap-3">
                       <span className="text-xl">📖</span> 스토리
                     </div>
@@ -117,7 +117,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </div>
 
                 <div className="px-4 py-3 flex flex-col">
-                  <button onClick={() => setIsArchiveOpen(!isArchiveOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
+                  <button aria-expanded={isArchiveOpen} onClick={() => setIsArchiveOpen(!isArchiveOpen)} className="flex items-center justify-between text-lg font-medium text-white w-full">
                     <div className="flex items-center gap-3">
                       <span className="text-xl">🗃️</span> 아카이브
                     </div>
