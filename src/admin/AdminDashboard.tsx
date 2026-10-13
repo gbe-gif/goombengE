@@ -1,9 +1,10 @@
+import { adminCategories, groupAdminContent } from '../utils/adminContent';
 import { useMemo, useState } from 'react';
 import { useContent } from '../hooks/useContent';
 import { useAuth } from '../hooks/useAuth';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Link as LinkIcon, Loader2, Pin } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Pin } from 'lucide-react';
 import { db } from '../lib/firebase';
-import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { ArchiveItem } from '../data/mockData';
 import ContentForm from './ContentForm';
 import { Navigate } from 'react-router-dom';
@@ -19,9 +20,8 @@ export default function AdminDashboard() {
   const [feedback, setFeedback] = useState('');
   const [editingItem, setEditingItem] = useState<ArchiveItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [quickUrl, setQuickUrl] = useState('');
-  const [isQuickAdding, setIsQuickAdding] = useState(false);
-  const sortedContent = useMemo(() => [...content].sort((a, b) => Number(b.isAdminPinned === true) - Number(a.isAdminPinned === true)), [content]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const contentGroups = useMemo(() => groupAdminContent(content, selectedCategory), [content, selectedCategory]);
 
   if (authLoading || contentLoading) return <div className="text-white/60 text-center py-20">로딩 중...</div>;
 
@@ -56,45 +56,6 @@ export default function AdminDashboard() {
   const handleTogglePinned = (item: ArchiveItem) => updateFlags(item, { isPinned: !item.isPinned }, item.isPinned ? '홈 고정을 해제했습니다.' : '홈에 고정했습니다.');
   const handleToggleAdminPinned = (item: ArchiveItem) => updateFlags(item, { isAdminPinned: item.isAdminPinned !== true }, item.isAdminPinned === true ? '관리자 목록 고정을 해제했습니다.' : '관리자 목록 맨 위에 고정했습니다.');
 
-  const handleQuickAdd = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!quickUrl) return;
-    
-    setIsQuickAdding(true);
-    try {
-      const imageItems = content.filter(i => i.type === 'image');
-      let maxCode = 0;
-      imageItems.forEach(i => {
-        if (!i.code) return;
-        const match = i.code.match(/I(\d+)/i);
-        if (match) {
-          const num = parseInt(match[1], 10);
-          if (num > maxCode) maxCode = num;
-        }
-      });
-      const nextCode = `I${maxCode + 1}`;
-      
-      const newItem: ArchiveItem = {
-        id: crypto.randomUUID(),
-        code: nextCode,
-        name: `새 이미지 (${nextCode})`,
-        type: 'image',
-        imageUrl: quickUrl,
-        link: quickUrl,
-        date: new Date().toISOString(),
-        isVisible: true
-      };
-      
-      await setDoc(doc(db, 'content', newItem.id), newItem);
-      setQuickUrl('');
-    } catch (err) {
-      console.error(err);
-      alert('추가 실패');
-    } finally {
-      setIsQuickAdding(false);
-    }
-  };
-
   if (isCreating || editingItem) {
     return (
       <ContentForm 
@@ -113,33 +74,6 @@ export default function AdminDashboard() {
       {contentError && <p role="alert" className="text-amber-300">{contentError}</p>}
       {feedback && <p role="status" className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm">{feedback}</p>}
       {content.some(item => item.isVisible === undefined) && <p className="text-amber-300 text-sm">공개 상태가 없는 이전 글은 방문자에게 숨겨집니다. 공개하려는 글의 상태 버튼을 눌러 주세요.</p>}
-      <div className="bg-[#12182B] border border-white/10 rounded-xl p-6 shadow-lg shadow-black/20">
-        <h3 className="text-lg font-medium text-white mb-4">빠른 이미지 추가</h3>
-        <form onSubmit={handleQuickAdd} className="flex gap-4 items-center">
-          <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <LinkIcon size={18} className="text-white/40" />
-            </div>
-            <input 
-              type="url"
-              placeholder="https://i.postimg.cc/... (이미지 URL 붙여넣기)" 
-              value={quickUrl}
-              onChange={(e) => setQuickUrl(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500 transition-colors"
-              required
-            />
-          </div>
-          <button 
-            type="submit" 
-            disabled={isQuickAdding || !quickUrl}
-            className="bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-500/50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-colors whitespace-nowrap"
-          >
-            {isQuickAdding ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} />}
-            바로 추가
-          </button>
-        </form>
-      </div>
-
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">콘텐츠 관리</h2>
         <button 
@@ -151,7 +85,10 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      <p className="text-sm text-slate-400">분류 앞의 핀을 누르면 자주 수정하는 글이 이 목록 맨 위에 표시됩니다. 별표는 홈페이지 고정 설정입니다.</p>
+      <p className="text-sm text-slate-400">핀으로 고정한 글은 분류와 관계없이 맨 위에 표시됩니다. 나머지 글은 카테고리별로 묶었습니다. 별표는 홈페이지 고정 설정입니다.</p>
+      <div role="group" aria-label="관리할 글 분류" className="flex flex-wrap gap-2">
+        {[{ id: 'all', label: '전체', count: content.length }, ...adminCategories.map(type => ({ id: type, label: getCategoryLabel(type), count: content.filter(item => item.type === type).length })).filter(category => category.count > 0)].map(category => <button key={category.id} type="button" aria-pressed={selectedCategory === category.id} onClick={() => setSelectedCategory(category.id)} className={`min-h-11 rounded-xl px-4 py-2 text-sm border transition-colors ${selectedCategory === category.id ? 'border-blue-400/50 bg-blue-500/20 text-blue-200' : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}>{category.label} <span className="ml-1 text-xs opacity-70">{category.count}</span></button>)}
+      </div>
       <div className="bg-[#12182B] border border-white/10 rounded-xl overflow-hidden shadow-lg shadow-black/20 overflow-x-auto">
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="uppercase tracking-wider border-b border-white/10 bg-white/5">
@@ -165,8 +102,9 @@ export default function AdminDashboard() {
               <th className="px-6 py-4 font-medium text-white/60 text-right">관리</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
-            {sortedContent.map(item => (
+          {contentGroups.map(group => <tbody key={group.id} className="divide-y divide-white/10">
+            <tr><th colSpan={7} scope="rowgroup" className="px-6 py-4 text-left font-semibold text-blue-200 bg-white/5">{group.label} <span className="ml-2 text-xs text-slate-400">{group.items.length}개</span></th></tr>
+            {group.items.map(item => (
               <tr key={item.id} className={`hover:bg-white/5 transition-colors ${item.isAdminPinned === true ? 'bg-blue-500/5' : ''}`}>
                 <td className="px-3 py-4">
                   <button type="button" disabled={pending !== null}
@@ -207,12 +145,14 @@ export default function AdminDashboard() {
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <button 
+                      aria-label={`${item.name} 수정`}
                       onClick={() => setEditingItem(item)}
                       className="p-2 bg-white/5 hover:bg-white/10 text-white/80 rounded transition-colors"
                     >
                       <Edit2 size={16} />
                     </button>
                     <button 
+                      aria-label={`${item.name} 삭제`}
                       onClick={() => handleDelete(item.id)}
                       className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded transition-colors"
                     >
@@ -222,7 +162,8 @@ export default function AdminDashboard() {
                 </td>
               </tr>
             ))}
-          </tbody>
+          </tbody>)}
+          {contentGroups.length === 0 && <tbody><tr><td colSpan={7} className="px-6 py-12 text-center text-slate-400">선택한 분류에 등록된 글이 없습니다.</td></tr></tbody>}
         </table>
       </div>
       <MemoSettings />

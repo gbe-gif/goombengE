@@ -1,5 +1,5 @@
 import CopyTextButton from '../components/CopyTextButton';
-import { getOocCopyText } from '../utils/ooc';
+import OocContent from '../components/OocContent';
 import StoryLinks from '../components/StoryLinks';
 import SeriesShelf from '../components/SeriesShelf';
 import { groupStoriesBySeries, normalizeSeriesName, seriesUrl } from '../utils/series';
@@ -126,7 +126,7 @@ export default function PostDetail() {
       </section>}
 
       <div className="post-body prose prose-invert prose-emerald max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-headings:text-white">
-        {post.type === 'ooc' && <div className="flex justify-end mb-4"><CopyTextButton text={getOocCopyText(post.content || '')} /></div>}
+        {post.type === 'ooc' && <div className="flex justify-end mb-4"><CopyTextButton text={post.content || ''} /></div>}
 
         {post.imageUrl && (
           <img 
@@ -137,9 +137,7 @@ export default function PostDetail() {
           />
         )}
         
-        <MarkdownContent copyCodeBlocks={post.type === 'ooc'}>
-          {post.content || '*내용이 없습니다.*'}
-        </MarkdownContent>
+        {post.type === 'ooc' ? <OocContent text={post.content || '내용이 없습니다.'} /> : <MarkdownContent>{post.content || '*내용이 없습니다.*'}</MarkdownContent>}
 
         {post.link && post.type !== 'work' && (
           <div className="mt-12 pt-8 border-t border-white/10">

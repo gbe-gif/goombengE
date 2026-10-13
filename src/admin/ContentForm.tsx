@@ -1,3 +1,4 @@
+import OocContent from '../components/OocContent';
 import { useContent } from '../hooks/useContent';
 import { normalizeSeriesName } from '../utils/series';
 import { DEFAULT_STORY_LINK_LABEL, getStoryLinks, isStoryUrl } from '../utils/storyLinks';
@@ -264,7 +265,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-white/60 mb-2">
-            본문 내용 (Markdown 지원)
+            본문 내용 {formData.type === 'ooc' ? '(원문 그대로 표시·복사)' : '(Markdown 지원)'}
           </label>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <textarea 
@@ -277,9 +278,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
             <div className="w-full h-96 bg-black/30 border border-white/5 rounded-lg p-4 overflow-y-auto">
               <div className="text-sm text-white/40 mb-2 border-b border-white/10 pb-2">미리보기</div>
               <div className="prose prose-invert prose-emerald prose-sm max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-headings:text-white">
-                <MarkdownContent copyCodeBlocks={formData.type === 'ooc'}>
-                  {formData.content || '*내용이 없습니다.*'}
-                </MarkdownContent>
+                {formData.type === 'ooc' ? <OocContent text={formData.content || '내용이 없습니다.'} /> : <MarkdownContent>{formData.content || '*내용이 없습니다.*'}</MarkdownContent>}
               </div>
             </div>
           </div>

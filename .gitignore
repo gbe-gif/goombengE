@@ -10,3 +10,5 @@ coverage/
 .pnpm-store/
 tests/.visibility.test.mjs
 tests/.series.test.mjs
+
+tests/.ooc.test.mjs
