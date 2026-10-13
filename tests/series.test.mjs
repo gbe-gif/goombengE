@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { groupStoriesBySeries, normalizeSeriesName, seriesUrl } from '../src/utils/series';
+import { compareSeriesStories, groupStoriesBySeries, normalizeSeriesName, seriesUrl } from '../src/utils/series';
 const story = (id, extra = {}) => ({ id, name: id, type: 'work', date: '2026-01-01', isVisible: true, ...extra });
 test('series names normalize whitespace and Unicode', () => {
   assert.equal(normalizeSeriesName('  학교   이야기\n '), '학교 이야기');
@@ -25,4 +25,9 @@ test('series links safely encode names and empty input produces no groups', () =
   const url = seriesUrl('  학교 & 사랑 / 시즌 1 ');
   assert.equal(new URL(url,'https://example.test').searchParams.get('name'), '학교 & 사랑 / 시즌 1');
   assert.equal(groupStoriesBySeries([]).size, 0);
+});
+
+test('series numbers override newest-first input for filtered story lists', () => {
+  const items = [story('three',{seriesOrder:3,date:'2026-03-01'}),story('two',{seriesOrder:2,date:'2026-02-01'}),story('one',{seriesOrder:1,date:'2026-01-01'}),story('unset',{date:'2026-04-01'})];
+  assert.deepEqual(items.sort(compareSeriesStories).map(item => item.id), ['one','two','three','unset']);
 });

@@ -1,5 +1,5 @@
 import StoryLinks from '../components/StoryLinks';
-import { normalizeSeriesName, seriesUrl } from '../utils/series';
+import { compareSeriesStories, normalizeSeriesName, seriesUrl } from '../utils/series';
 import StoryTabs from '../components/StoryTabs';
 import Thumbnail from '../components/Thumbnail';
 import { useState, useMemo, useEffect } from 'react';
@@ -30,7 +30,7 @@ export default function WorksPage() {
   const seriesNames = useMemo(() => Array.from(new Set(works.map(w => normalizeSeriesName(w.seriesName)).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ko')), [works]);
 
   const filteredStories = useMemo(() => {
-    return works.filter(work => {
+    const filtered = works.filter(work => {
       const workPlatforms = work.platform ? work.platform.split(',').map(s => s.trim().split(' ')[0]) : [];
       const matchPlatform = selectedPlatform === 'all' || workPlatforms.includes(selectedPlatform);
       const matchGenre = selectedGenre === 'all' || work.genre === selectedGenre;
@@ -39,6 +39,7 @@ export default function WorksPage() {
       const matchTag = !selectedTag || (work.tags && work.tags.includes(selectedTag));
       return matchPlatform && matchGenre && matchStatus && matchSeries && matchTag;
     });
+    return selectedSeries ? filtered.sort(compareSeriesStories) : filtered;
   }, [works, selectedPlatform, selectedGenre, selectedStatus, selectedSeries, selectedTag]);
 
   const handleClearTag = () => {
