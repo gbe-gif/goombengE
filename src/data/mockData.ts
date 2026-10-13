@@ -20,6 +20,7 @@ export interface ArchiveItem {
   downloadUrl?: string; // For resources
   excerpt?: string; // Short preview
   isPinned?: boolean; // For pinned items on Home
+  isAdminPinned?: boolean; // For shortcuts at the top of the admin content list
 }
 
 export const initialArchiveData: ArchiveItem[] = [

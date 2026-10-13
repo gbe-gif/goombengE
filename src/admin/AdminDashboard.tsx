@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useContent } from '../hooks/useContent';
 import { useAuth } from '../hooks/useAuth';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Link as LinkIcon, Loader2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Link as LinkIcon, Loader2, Pin } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { ArchiveItem } from '../data/mockData';
@@ -21,6 +21,7 @@ export default function AdminDashboard() {
   const [isCreating, setIsCreating] = useState(false);
   const [quickUrl, setQuickUrl] = useState('');
   const [isQuickAdding, setIsQuickAdding] = useState(false);
+  const sortedContent = useMemo(() => [...content].sort((a, b) => Number(b.isAdminPinned === true) - Number(a.isAdminPinned === true)), [content]);
 
   if (authLoading || contentLoading) return <div className="text-white/60 text-center py-20">로딩 중...</div>;
 
@@ -53,6 +54,7 @@ export default function AdminDashboard() {
     return updateFlags(item, { isVisible: visible }, visible ? '공개로 변경했습니다.' : '비공개로 변경했습니다. 방문자에게는 표시되지 않습니다.');
   };
   const handleTogglePinned = (item: ArchiveItem) => updateFlags(item, { isPinned: !item.isPinned }, item.isPinned ? '홈 고정을 해제했습니다.' : '홈에 고정했습니다.');
+  const handleToggleAdminPinned = (item: ArchiveItem) => updateFlags(item, { isAdminPinned: item.isAdminPinned !== true }, item.isAdminPinned === true ? '관리자 목록 고정을 해제했습니다.' : '관리자 목록 맨 위에 고정했습니다.');
 
   const handleQuickAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,10 +151,12 @@ export default function AdminDashboard() {
         </button>
       </div>
 
+      <p className="text-sm text-slate-400">분류 앞의 핀을 누르면 자주 수정하는 글이 이 목록 맨 위에 표시됩니다. 별표는 홈페이지 고정 설정입니다.</p>
       <div className="bg-[#12182B] border border-white/10 rounded-xl overflow-hidden shadow-lg shadow-black/20 overflow-x-auto">
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="uppercase tracking-wider border-b border-white/10 bg-white/5">
             <tr>
+              <th className="px-3 py-4 font-medium text-white/60"><span className="sr-only">관리자 목록 고정</span><Pin size={16} aria-hidden="true" /></th>
               <th className="px-6 py-4 font-medium text-white/60">분류</th>
               <th className="px-6 py-4 font-medium text-white/60 w-full">제목</th>
               <th className="px-6 py-4 font-medium text-white/60">작성일</th>
@@ -162,8 +166,18 @@ export default function AdminDashboard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
-            {content.map(item => (
-              <tr key={item.id} className="hover:bg-white/5 transition-colors">
+            {sortedContent.map(item => (
+              <tr key={item.id} className={`hover:bg-white/5 transition-colors ${item.isAdminPinned === true ? 'bg-blue-500/5' : ''}`}>
+                <td className="px-3 py-4">
+                  <button type="button" disabled={pending !== null}
+                    aria-pressed={item.isAdminPinned === true}
+                    aria-label={`${item.name} 관리자 목록 ${item.isAdminPinned === true ? '고정 해제' : '맨 위에 고정'}`}
+                    title={item.isAdminPinned === true ? '관리자 목록 고정 해제' : '관리자 목록 맨 위에 고정'}
+                    onClick={() => handleToggleAdminPinned(item)}
+                    className={`p-2 rounded-lg transition-colors disabled:opacity-50 ${item.isAdminPinned === true ? 'bg-blue-500/20 text-blue-300' : 'text-white/30 hover:bg-white/10 hover:text-white'}`}>
+                    <Pin size={17} fill={item.isAdminPinned === true ? 'currentColor' : 'none'} aria-hidden="true" />
+                  </button>
+                </td>
                 <td className="px-6 py-4 text-white/60">{getCategoryLabel(item.type)}</td>
                 <td className="px-6 py-4 font-medium truncate max-w-xs">
                   {item.code && <span className="mr-2 text-xs text-blue-400 bg-blue-400/10 px-1 rounded">{item.code}</span>}
