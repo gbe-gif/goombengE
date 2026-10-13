@@ -1,3 +1,5 @@
+import CopyTextButton from '../components/CopyTextButton';
+import { getOocCopyText } from '../utils/ooc';
 import StoryLinks from '../components/StoryLinks';
 import SeriesShelf from '../components/SeriesShelf';
 import { groupStoriesBySeries, normalizeSeriesName, seriesUrl } from '../utils/series';
@@ -5,10 +7,9 @@ import { useAuth } from '../hooks/useAuth';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useContent } from '../hooks/useContent';
 import MarkdownContent from '../components/MarkdownContent';
-import { ExternalLink, ArrowLeft, Download, Copy, Check } from 'lucide-react';
+import { ExternalLink, ArrowLeft, Download } from 'lucide-react';
 import { formatKST } from '../lib/formatDate';
 import { getCategoryLabel } from '../utils/category';
-import { useState } from 'react';
 
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +19,6 @@ export default function PostDetail() {
 
   const post = content.find(item => item.id === id);
 
-  const [copied, setCopied] = useState(false);
 
   if (loading) return <p role="status" className="text-center py-20">글을 불러오는 중입니다…</p>;
   if (error) return <p role="alert" className="text-center py-20 text-amber-200">{error}</p>;
@@ -126,21 +126,7 @@ export default function PostDetail() {
       </section>}
 
       <div className="post-body prose prose-invert prose-emerald max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-headings:text-white">
-        {post.type === 'ooc' && (
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(post.content || '');
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors"
-            >
-              {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
-              {copied ? '복사됨' : '복사하기'}
-            </button>
-          </div>
-        )}
+        {post.type === 'ooc' && <div className="flex justify-end mb-4"><CopyTextButton text={getOocCopyText(post.content || '')} /></div>}
 
         {post.imageUrl && (
           <img 
@@ -151,7 +137,7 @@ export default function PostDetail() {
           />
         )}
         
-        <MarkdownContent>
+        <MarkdownContent copyCodeBlocks={post.type === 'ooc'}>
           {post.content || '*내용이 없습니다.*'}
         </MarkdownContent>
 

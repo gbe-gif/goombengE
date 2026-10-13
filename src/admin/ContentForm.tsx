@@ -277,7 +277,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
             <div className="w-full h-96 bg-black/30 border border-white/5 rounded-lg p-4 overflow-y-auto">
               <div className="text-sm text-white/40 mb-2 border-b border-white/10 pb-2">미리보기</div>
               <div className="prose prose-invert prose-emerald prose-sm max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-headings:text-white">
-                <MarkdownContent>
+                <MarkdownContent copyCodeBlocks={formData.type === 'ooc'}>
                   {formData.content || '*내용이 없습니다.*'}
                 </MarkdownContent>
               </div>

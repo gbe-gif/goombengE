@@ -10,7 +10,8 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "test:visibility": "node tests/run-visibility.mjs",
-    "test:series": "node tests/run-series.mjs"
+    "test:series": "node tests/run-series.mjs",
+    "test:ooc": "node tests/run-ooc.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
