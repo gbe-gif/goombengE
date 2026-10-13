@@ -17,6 +17,7 @@ export default function WorksPage() {
   const selectedPlatform = searchParams.get('platform') || 'all';
   const selectedGenre = searchParams.get('genre') || 'all';
   const selectedStatus = searchParams.get('status') || 'all';
+  const selectedSeries = normalizeSeriesName(searchParams.get('series') || '');
   const selectedTag = searchParams.get('tag');
 
   const works = useMemo(() => {
@@ -26,6 +27,7 @@ export default function WorksPage() {
   const platforms = useMemo(() => Array.from(new Set(works.flatMap(w => w.platform ? w.platform.split(',').map(s => s.trim().split(' ')[0]) : []).filter(Boolean))), [works]);
   const genres = useMemo(() => Array.from(new Set(works.map(w => w.genre).filter(Boolean))), [works]);
   const statuses = useMemo(() => Array.from(new Set(works.map(w => w.status).filter(Boolean))), [works]);
+  const seriesNames = useMemo(() => Array.from(new Set(works.map(w => normalizeSeriesName(w.seriesName)).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ko')), [works]);
 
   const filteredStories = useMemo(() => {
     return works.filter(work => {
@@ -33,10 +35,11 @@ export default function WorksPage() {
       const matchPlatform = selectedPlatform === 'all' || workPlatforms.includes(selectedPlatform);
       const matchGenre = selectedGenre === 'all' || work.genre === selectedGenre;
       const matchStatus = selectedStatus === 'all' || work.status === selectedStatus;
+      const matchSeries = !selectedSeries || normalizeSeriesName(work.seriesName) === selectedSeries;
       const matchTag = !selectedTag || (work.tags && work.tags.includes(selectedTag));
-      return matchPlatform && matchGenre && matchStatus && matchTag;
+      return matchPlatform && matchGenre && matchStatus && matchSeries && matchTag;
     });
-  }, [works, selectedPlatform, selectedGenre, selectedStatus, selectedTag]);
+  }, [works, selectedPlatform, selectedGenre, selectedStatus, selectedSeries, selectedTag]);
 
   const handleClearTag = () => {
     searchParams.delete('tag');
@@ -72,6 +75,14 @@ export default function WorksPage() {
     setSearchParams(prev => {
       if (val === 'all') prev.delete('status');
       else prev.set('status', val);
+      return prev;
+    });
+  };
+
+  const setSeriesFilter = (val: string) => {
+    setSearchParams(prev => {
+      if (!val) prev.delete('series');
+      else prev.set('series', val);
       return prev;
     });
   };
@@ -136,11 +147,20 @@ export default function WorksPage() {
               <option value="all">모든 연재 상태</option>
               {statuses.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
+            <select aria-label="시리즈 필터"
+              value={selectedSeries}
+              onChange={(e) => setSeriesFilter(e.target.value)}
+              className="bg-[#12182B] border border-white/10 text-white rounded-lg px-4 py-2 outline-none focus:border-blue-500/50 transition-colors max-w-full"
+            >
+              <option value="">모든 시리즈</option>
+              {selectedSeries && !seriesNames.includes(selectedSeries) && <option value={selectedSeries}>{selectedSeries}</option>}
+              {seriesNames.map(name => <option key={name} value={name}>{name}</option>)}
+            </select>
           </div>
 
           <div className="flex items-center justify-between mb-5 text-sm text-slate-300">
             <p>스토리 {filteredStories.length}개</p>
-            {(selectedPlatform !== 'all' || selectedGenre !== 'all' || selectedStatus !== 'all' || selectedTag) && <button onClick={() => setSearchParams({})} className="text-blue-200 hover:underline">필터 초기화</button>}
+            {(selectedPlatform !== 'all' || selectedGenre !== 'all' || selectedStatus !== 'all' || selectedSeries || selectedTag) && <button onClick={() => setSearchParams({})} className="text-blue-200 hover:underline">필터 초기화</button>}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredStories.map(work => (
