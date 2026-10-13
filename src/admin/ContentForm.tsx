@@ -239,6 +239,7 @@ export default function ContentForm({ item, onClose }: ContentFormProps) {
             <button type="button" onClick={() => addStoryLink()} className="rounded-lg bg-blue-500/20 px-4 py-2 text-sm text-blue-200 hover:bg-blue-500/30">+ 링크 추가</button>
             <button type="button" onClick={() => addStoryLink('세이프 버전으로 이동')} className="rounded-lg bg-white/10 px-4 py-2 text-sm hover:bg-white/20">+ 세이프 버전</button>
             <button type="button" onClick={() => addStoryLink('언세이프 버전으로 이동')} className="rounded-lg bg-white/10 px-4 py-2 text-sm hover:bg-white/20">+ 언세이프 버전</button>
+            <button type="button" onClick={() => addStoryLink('소개 사이트로 이동')} className="rounded-lg bg-white/10 px-4 py-2 text-sm hover:bg-white/20">+ 소개 사이트</button>
           </div>
         </section>}
 
