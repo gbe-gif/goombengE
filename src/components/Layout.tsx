@@ -147,7 +147,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 <div className="mt-8 pt-4 border-t border-white/10">
                   <Link onClick={closeMenu} to="/dev-notes" className="flex items-center gap-3 px-4 py-2 rounded-xl text-white/50 hover:text-white hover:bg-white/5 text-sm font-medium transition-colors">
-                    <span className="text-base grayscale opacity-70">📓</span> 개발 기록
+                    <span className="text-base grayscale opacity-70">📓</span> 기록
                   </Link>
                 </div>
 

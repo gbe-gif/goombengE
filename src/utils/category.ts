@@ -5,7 +5,7 @@ export const getCategoryLabel = (type: string) => {
     case 'work': return '📖 스토리';
     case 'archive': return '🗃️ 아카이브';
     case 'ooc': return '🎲 OOC 놀이터';
-    case 'devnote': return '📓 개발 기록';
+    case 'devnote': return '📓 기록';
     // For other archive types if needed:
     case 'image': return '🖼️ 이미지';
     case 'worldview': return '🌍 세계관';

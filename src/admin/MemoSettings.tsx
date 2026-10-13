@@ -11,7 +11,7 @@ const CATEGORIES = [
   { id: 'worldview', label: 'Worldview' },
   { id: 'log', label: 'Test Logs' },
   { id: 'ooc', label: 'OOC Playground' },
-  { id: 'devnote', label: 'Dev Notes' },
+  { id: 'devnote', label: '기록' },
 ];
 
 export default function MemoSettings() {

@@ -13,10 +13,10 @@ export default function DevNotesPage() {
 
   return (
     <PostList 
-      title="Dev Notes" 
+      title="기록" 
       icon="📓" 
       items={notesItems} 
-      emptyMessage="등록된 개발 노트가 없습니다."
+      emptyMessage="등록된 기록이 없습니다."
       categoryId="devnote"
     />
   );
