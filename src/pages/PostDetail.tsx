@@ -4,8 +4,7 @@ import { groupStoriesBySeries, normalizeSeriesName, seriesUrl } from '../utils/s
 import { useAuth } from '../hooks/useAuth';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useContent } from '../hooks/useContent';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import MarkdownContent from '../components/MarkdownContent';
 import { ExternalLink, ArrowLeft, Download, Copy, Check } from 'lucide-react';
 import { formatKST } from '../lib/formatDate';
 import { getCategoryLabel } from '../utils/category';
@@ -126,7 +125,7 @@ export default function PostDetail() {
         <SeriesShelf items={seriesStories} currentId={post.id} />
       </section>}
 
-      <div className="post-body prose prose-invert prose-emerald max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-h5:text-lg prose-h5:font-semibold prose-h6:text-base prose-headings:text-white">
+      <div className="post-body prose prose-invert prose-emerald max-w-none prose-em:text-[#C0C4CC]/60 prose-em:italic prose-headings:text-white">
         {post.type === 'ooc' && (
           <div className="flex justify-end mb-4">
             <button
@@ -152,9 +151,9 @@ export default function PostDetail() {
           />
         )}
         
-        <Markdown remarkPlugins={[remarkGfm]}>
+        <MarkdownContent>
           {post.content || '*내용이 없습니다.*'}
-        </Markdown>
+        </MarkdownContent>
 
         {post.link && post.type !== 'work' && (
           <div className="mt-12 pt-8 border-t border-white/10">
